@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EU Rental Property Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+            padding: 15px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 5px;
+            font-size: 1.8em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #6c757d;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+        }
+
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .input-section {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+        }
+
+        .results-section {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 12px;
+            font-size: 1.2em;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 6px;
+        }
+
+        h3 {
+            color: #495057;
+            margin: 15px 0 8px 0;
+            font-size: 1em;
+            font-weight: 600;
+        }
+
+        .form-field {
+            margin-bottom: 8px;
+            display: grid;
+            grid-template-columns: 180px 1fr;
+            align-items: center;
+            gap: 10px;
+        }
+
+        label {
+            font-size: 0.85em;
+            color: #495057;
+            text-align: right;
+        }
+
+        input[type="number"], input[type="text"] {
+            padding: 6px 10px;
+            border: 2px solid #b8daff;
+            background: #cfe2ff;
+            border-radius: 4px;
+            font-size: 0.9em;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #0d6efd;
+            background: #e7f1ff;
+        }
+        
+        .metric {
+            display: grid;
+            grid-template-columns: 180px 1fr;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 10px;
+            margin-bottom: 6px;
+            border-radius: 4px;
+            background: #d1e7dd;
+            border: 2px solid #a3cfbb;
+        }
+
+        .metric.good {
+            background: #d1e7dd;
+            border-color: #28a745;
+        }
+
+        .metric.warning {
+            background: #fff3cd;
+            border-color: #ffc107;
+        }
+
+        .metric.poor {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+
+        .metric-label {
+            font-size: 0.85em;
+            color: #2c3e50;
+            text-align: right;
+        }
+
+        .metric-value {
+            font-size: 0.95em;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        .btn {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #0d6efd;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0b5ed7;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 8px 15px;
+            background: #e9ecef;
+            border: none;
+            border-radius: 6px 6px 0 0;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: 600;
+            color: #495057;
+            transition: all 0.3s;
+        }
+
+        .tab:hover {
+            background: #dee2e6;
+        }
+
+        .tab.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 0.85em;
+        }
+
+        .results-table th {
+            background: #667eea;
+            color: white;
+            padding: 8px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .results-table td {
+            padding: 6px 8px;
+            border-bottom: 1px solid #dee2e6;
+            background: white;
+        }
+
+        .results-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .total-row {
+            background: #d4edda !important;
+            font-weight: bold;
+        }
+
+        @media (max-width: 968px) {
+            .calculator-grid {
+                grid-template-columns: 1fr;
+            }
+            .form-field, .metric {
+                grid-template-columns: 120px 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏘️ EU Rental Property Calculator</h1>
+        <p class="subtitle">European Real Estate Investment Analysis</p>
+
+        <div class="calculator-grid">
+            <!-- LEFT SIDE: INPUTS (BLUE FIELDS) -->
+            <div class="input-section">
+                <h2>📝 Inputs</h2>
+
+                <div class="form-field">
+                    <label>Address (optional)</label>
+                    <input type="text" id="address" placeholder="123 Main St">
+                </div>
+
+                <h3>Property & Loan</h3>
+
+                <div class="form-field">
+                    <label>Sale Price</label>
+                    <input type="number" id="salePrice" value="70000" oninput="calculate()">
+                </div>
+
+                <div class="form-field">
+                    <label>Down Payment %</label>
+                    <input type="number" id="downPayment" value="25" step="0.1" oninput="calculate()">
+                </div>
+
+                <div class="form-field">
+                    <label>Interest Rate %</label>
+                    <input type="number" id="interestRate" value="7.5" step="0.1" oninput="calculate()">
+                </div>
+
+                <div class="form-field">
+                    <label>Loan Term (years)</label>
+                    <input type="number" id="loanTerm" value="30" oninput="calculate()">
+                </div>
+
+                <div class="form-field">
+                    <label>Closing Costs</label>
+                    <input type="number" id="closingCosts" value="3000" oninput="calculate()">
+                </div>
+
+                <h3>Income</h3>
+
+                <div class="form-field">
+                    <label>Gross Rent/Mo</label>
+                    <input type="number" id="grossRent" value="1000" oninput="calculate()">
+                </div>
+
+                <h3>Expenses</h3>
+
+                <div class="form-field">
+                    <label>Property Tax/Yr</label>
+                    <input type="number" id="propTax" value="840" oninput="calculate()">
+                </div>
+
+                <div class="form-field">
+                    <label>Insurance/Yr</label>
+                    <input type="number" id="insurance" value="600" oninput="calculate()">
+                </div>
+
+                <div class="form-field">
+                    <label>Gas & Electric/Mo</label>
+                    <input type="number" id="gasElectric" value="0" oninput="calculate()">
+                </div>
+
+                <div class="form-field">
+                    <label>Water/Mo</label>
+                    <input type="number" id="water" value="0" oninput="calculate()">
+                </div>
+
+                <div class="form-field">
+                    <label>Sewer/Mo</label>
+                    <input type="number" id="sewer" value="0" oninput="calculate()">
+                </div>
+
+                <div class="form-field">
+                    <label>Garbage/Mo</label>
+                    <input type="number" id="garbage" value="0" oninput="calculate()">
+                </div>
+
+                <div class="form-field">
+                    <label>Lawn and Snow/Mo</label>
+                    <input type="number" id="lawnSnow" value="0" oninput="calculate()">
+                </div>
+
+                <div class="form-field">
+                    <label>Vacancy %</label>
+                    <input type="number" id="vacancyPct" value="5" step="0.1" oninput="calculate()">
+                </div>
+
+                <div class="form-field">
+                    <label>Property Mgmt %</label>
+                    <input type="number" id="propMgmtPct" value="10" step="0.1" oninput="calculate()">
+                </div>
+
+                <div class="form-field">
+                    <label>Maintenance %</label>
+                    <input type="number" id="maintenancePct" value="10" step="0.1" oninput="calculate()">
+                </div>
+
+                <h3>Advanced Settings</h3>
+
+                <div class="form-field">
+                    <label>Rent Growth Rate %</label>
+                    <input type="number" id="rentGrowthRate" value="3" step="0.1" oninput="calculate()">
+                </div>
+
+                <div class="form-field">
+                    <label>Appreciation Rate %</label>
+                    <input type="number" id="appreciationRate" value="3" step="0.1" oninput="calculate()">
+                </div>
+
+                <div class="form-field">
+                    <label>Improved Value %</label>
+                    <input type="number" id="improvedValuePct" value="80" step="1" oninput="calculate()">
+                </div>
+
+                <div class="form-field">
+                    <label>Marginal Tax Rate %</label>
+                    <input type="number" id="marginalTaxRate" value="25" step="1" oninput="calculate()">
+                </div>
+            </div>
+
+            <!-- RIGHT SIDE: CALCULATED RESULTS (GREEN FIELDS) -->
+            <div class="results-section">
+                <h2>📊 Analysis Results</h2>
+
+                <!-- Tabs for different analytics -->
+                <div class="tabs">
+                    <button class="tab active" onclick="showTab('proforma')">Pro Forma</button>
+                    <button class="tab" onclick="showTab('debtpaydown')">Debt Paydown</button>
+                    <button class="tab" onclick="showTab('rentgrowth')">Rent Growth</button>
+                    <button class="tab" onclick="showTab('appreciation')">Appreciation</button>
+                    <button class="tab" onclick="showTab('totalreturn')">Total Return</button>
+                    <button class="tab" onclick="showTab('dcr')">DCR</button>
+                    <button class="tab" onclick="showTab('taxdeductions')">Tax Deductions</button>
+                </div>
+
+                <!-- Tab Contents -->
+                <div id="proforma" class="tab-content active"></div>
+                <div id="debtpaydown" class="tab-content"></div>
+                <div id="rentgrowth" class="tab-content"></div>
+                <div id="appreciation" class="tab-content"></div>
+                <div id="totalreturn" class="tab-content"></div>
+                <div id="dcr" class="tab-content"></div>
+                <div id="taxdeductions" class="tab-content"></div>
+            </div>
+        </div>
+
+        <div class="buttons">
+            <button class="btn btn-primary" onclick="saveData()">💾 Save Data</button>
+            <button class="btn btn-success" onclick="exportData()">📥 Export</button>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabName) {
+            // Hide all tabs
+            const tabs = document.querySelectorAll('.tab');
+            const contents = document.querySelectorAll('.tab-content');
+
+            tabs.forEach(tab => tab.classList.remove('active'));
+            contents.forEach(content => content.classList.remove('active'));
+
+            // Show selected tab
+            event.target.classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+        }
+
+        function formatCurrency(value) {
+            return '$' + value.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+        }
+
+        function formatPercent(value) {
+            return value.toFixed(2) + '%';
+        }
+
+        function calculate() {
+            // Get inputs (BLUE FIELDS from Excel)
+            const salePrice = parseFloat(document.getElementById('salePrice').value) || 0;
+            const downPaymentPct = parseFloat(document.getElementById('downPayment').value) || 0;
+            const interestRate = parseFloat(document.getElementById('interestRate').value) || 0;
+            const loanTerm = parseFloat(document.getElementById('loanTerm').value) || 0;
+            const closingCosts = parseFloat(document.getElementById('closingCosts').value) || 0;
+            const grossRent = parseFloat(document.getElementById('grossRent').value) || 0;
+            const propTax = parseFloat(document.getElementById('propTax').value) || 0;
+            const insurance = parseFloat(document.getElementById('insurance').value) || 0;
+            const gasElectric = parseFloat(document.getElementById('gasElectric').value) || 0;
+            const water = parseFloat(document.getElementById('water').value) || 0;
+            const sewer = parseFloat(document.getElementById('sewer').value) || 0;
+            const garbage = parseFloat(document.getElementById('garbage').value) || 0;
+            const lawnSnow = parseFloat(document.getElementById('lawnSnow').value) || 0;
+            const vacancyPct = parseFloat(document.getElementById('vacancyPct').value) || 0;
+            const propMgmtPct = parseFloat(document.getElementById('propMgmtPct').value) || 0;
+            const maintenancePct = parseFloat(document.getElementById('maintenancePct').value) || 0;
+            const rentGrowthRate = parseFloat(document.getElementById('rentGrowthRate').value) || 0;
+            const appreciationRate = parseFloat(document.getElementById('appreciationRate').value) || 0;
+            const improvedValuePct = parseFloat(document.getElementById('improvedValuePct').value) || 0;
+            const marginalTaxRate = parseFloat(document.getElementById('marginalTaxRate').value) || 0;
+
+            // Calculate loan
+            const downPayment = salePrice * (downPaymentPct / 100);
+            const loanAmount = salePrice - downPayment;
+            const monthlyRate = (interestRate / 100) / 12;
+            const numPayments = loanTerm * 12;
+
+            let monthlyMortgage = 0;
+            if (monthlyRate > 0 && numPayments > 0) {
+                monthlyMortgage = loanAmount * (monthlyRate * Math.pow(1 + monthlyRate, numPayments)) /
+                                 (Math.pow(1 + monthlyRate, numPayments) - 1);
+            }
+
+            // Calculate income (GREEN FIELDS)
+            const monthlyVacancy = grossRent * (vacancyPct / 100);
+            const effectiveIncome = grossRent - monthlyVacancy;
+
+            // Calculate expenses (GREEN FIELDS)
+            const monthlyPropMgmt = grossRent * (propMgmtPct / 100);
+            const monthlyPropTax = propTax / 12;
+            const monthlyInsurance = insurance / 12;
+            const totalUtilities = gasElectric + water + sewer + garbage + lawnSnow;
+            const monthlyMaintenance = grossRent * (maintenancePct / 100);
+
+            const totalOperatingExpenses = monthlyPropMgmt + monthlyPropTax + monthlyInsurance +
+                                          totalUtilities + monthlyMaintenance;
+
+            // Calculate NOI (before debt service)
+            const monthlyNOI = effectiveIncome - totalOperatingExpenses;
+            const annualNOI = monthlyNOI * 12;
+
+            // Calculate cash flow
+            const monthlyNet = monthlyNOI - monthlyMortgage;
+            const annualNet = monthlyNet * 12;
+
+            // Calculate metrics
+            const totalInvested = downPayment + closingCosts;
+            const capRate = salePrice > 0 ? (annualNOI / salePrice) * 100 : 0;
+            const annualizedROI = totalInvested > 0 ? (annualNet / totalInvested) * 100 : 0;
+            const annualDebtService = monthlyMortgage * 12;
+            const dcr = annualDebtService > 0 ? annualNOI / annualDebtService : 0;
+
+            // Display results (GREEN FIELDS matching Excel)
+            const resultsHTML = `
+                <h3 style="margin: 0 0 8px 0; font-size: 0.95em;">Pro Forma Analysis</h3>
+                <div class="metric">
+                    <span class="metric-label">Gross Rents</span>
+                    <span class="metric-value">$${grossRent.toFixed(2)}</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Property Management</span>
+                    <span class="metric-value">$${monthlyPropMgmt.toFixed(2)}</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Property Taxes</span>
+                    <span class="metric-value">$${monthlyPropTax.toFixed(2)}</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Insurance</span>
+                    <span class="metric-value">$${monthlyInsurance.toFixed(2)}</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Owner-Paid Utilities</span>
+                    <span class="metric-value">$${totalUtilities.toFixed(2)}</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Vacancy Reserve</span>
+                    <span class="metric-value">$${monthlyVacancy.toFixed(2)}</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Maintenance Reserve</span>
+                    <span class="metric-value">$${monthlyMaintenance.toFixed(2)}</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Total Operating Expenses</span>
+                    <span class="metric-value">$${totalOperatingExpenses.toFixed(2)}</span>
+                </div>
+                <div class="metric ${monthlyNOI > 0 ? 'good' : 'poor'}">
+                    <span class="metric-label"><strong>Monthly NOI</strong></span>
+                    <span class="metric-value"><strong>$${monthlyNOI.toFixed(2)}</strong></span>
+                </div>
+                <div class="metric ${annualNOI > 0 ? 'good' : 'poor'}">
+                    <span class="metric-label"><strong>Annualized NOI</strong></span>
+                    <span class="metric-value"><strong>$${annualNOI.toFixed(2)}</strong></span>
+                </div>
+                <div class="metric ${capRate >= 8 ? 'good' : capRate >= 6 ? 'warning' : 'poor'}">
+                    <span class="metric-label"><strong>Capitalization Rate</strong></span>
+                    <span class="metric-value"><strong>${capRate.toFixed(2)}%</strong></span>
+                </div>
+
+                <h3 style="margin: 15px 0 8px 0; font-size: 0.95em;">Mortgage Calculator</h3>
+                <div class="metric">
+                    <span class="metric-label">Loan Amount</span>
+                    <span class="metric-value">$${loanAmount.toFixed(2)}</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Down Payment</span>
+                    <span class="metric-value">$${downPayment.toFixed(2)}</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Monthly Mortgage</span>
+                    <span class="metric-value">$${monthlyMortgage.toFixed(2)}</span>
+                </div>
+                <div class="metric ${monthlyNet > 0 ? 'good' : 'poor'}">
+                    <span class="metric-label"><strong>Monthly Net</strong></span>
+                    <span class="metric-value"><strong>$${monthlyNet.toFixed(2)}</strong></span>
+                </div>
+                <div class="metric ${annualNet > 0 ? 'good' : 'poor'}">
+                    <span class="metric-label"><strong>Annualized Net</strong></span>
+                    <span class="metric-value"><strong>$${annualNet.toFixed(2)}</strong></span>
+                </div>
+                <div class="metric ${annualizedROI >= 15 ? 'good' : annualizedROI >= 8 ? 'warning' : 'poor'}">
+                    <span class="metric-label"><strong>Annualized ROI</strong></span>
+                    <span class="metric-value"><strong>${annualizedROI.toFixed(2)}%</strong></span>
+                </div>
+            `;
+
+            document.getElementById('proforma').innerHTML = resultsHTML;
+
+            // Calculate all other analytics
+            calculateDebtPaydown(loanAmount, interestRate, loanTerm, totalInvested);
+            calculateRentGrowth(grossRent, rentGrowthRate);
+            calculateAppreciation(salePrice, appreciationRate, totalInvested);
+            calculateTotalReturn(salePrice, totalInvested, annualNet, loanAmount, interestRate, loanTerm, appreciationRate, improvedValuePct, marginalTaxRate);
+            calculateDCR(annualNOI, monthlyMortgage, grossRent);
+            calculateTaxDeductions(salePrice, improvedValuePct, loanAmount, interestRate, loanTerm, marginalTaxRate, annualNet, totalInvested);
+        }
+
+        function calculateDebtPaydown(loanAmount, interestRate, loanTerm, totalInvestment) {
+            let html = '<h3 style="margin: 0 0 10px 0;">5-Year Debt Paydown</h3>';
+            html += '<table class="results-table"><thead><tr><th>Year</th><th>Principal Paid</th><th>Cumulative</th><th>ROI %</th></tr></thead><tbody>';
+
+            let balance = loanAmount;
+            let cumulative = 0;
+            const monthlyRate = (interestRate / 100) / 12;
+            const numPayments = loanTerm * 12;
+            const monthlyPayment = loanAmount * (monthlyRate * Math.pow(1 + monthlyRate, numPayments)) / (Math.pow(1 + monthlyRate, numPayments) - 1);
+
+            for (let year = 1; year <= 5; year++) {
+                let yearlyPrincipal = 0;
+                for (let month = 1; month <= 12; month++) {
+                    const interest = balance * monthlyRate;
+                    const principal = monthlyPayment - interest;
+                    balance -= principal;
+                    yearlyPrincipal += principal;
+                }
+                cumulative += yearlyPrincipal;
+                const roi = totalInvestment > 0 ? (cumulative / totalInvestment) * 100 : 0;
+                html += `<tr><td>Year ${year}</td><td>${formatCurrency(yearlyPrincipal)}</td><td>${formatCurrency(cumulative)}</td><td>${formatPercent(roi)}</td></tr>`;
+            }
+
+            html += '</tbody></table>';
+            document.getElementById('debtpaydown').innerHTML = html;
+        }
+
+        function calculateRentGrowth(initialRent, growthRate) {
+            let html = '<h3 style="margin: 0 0 10px 0;">20-Year Rent Growth Projection</h3>';
+            html += '<table class="results-table"><thead><tr><th>Year</th><th>Monthly Rent</th><th>Annual Income</th><th>% Increase</th></tr></thead><tbody>';
+
+            let rent = initialRent;
+            for (let year = 1; year <= 20; year++) {
+                const annualIncome = rent * 12;
+                const increase = year === 1 ? 0 : growthRate;
+                html += `<tr><td>Year ${year}</td><td>${formatCurrency(rent)}</td><td>${formatCurrency(annualIncome)}</td><td>${formatPercent(increase)}</td></tr>`;
+                rent = rent * (1 + growthRate / 100);
+            }
+
+            html += '</tbody></table>';
+            document.getElementById('rentgrowth').innerHTML = html;
+        }
+
+        function calculateAppreciation(salePrice, appreciationRate, totalInvestment) {
+            let html = '<h3 style="margin: 0 0 10px 0;">5-Year Property Appreciation</h3>';
+            html += '<table class="results-table"><thead><tr><th>Year</th><th>Property Value</th><th>Appreciation</th><th>ROI %</th></tr></thead><tbody>';
+
+            let value = salePrice;
+            let totalAppreciation = 0;
+            for (let year = 1; year <= 5; year++) {
+                const yearlyAppreciation = value * (appreciationRate / 100);
+                value += yearlyAppreciation;
+                totalAppreciation += yearlyAppreciation;
+                const roi = totalInvestment > 0 ? (totalAppreciation / totalInvestment) * 100 : 0;
+                html += `<tr><td>Year ${year}</td><td>${formatCurrency(value)}</td><td>${formatCurrency(totalAppreciation)}</td><td>${formatPercent(roi)}</td></tr>`;
+            }
+
+            html += '</tbody></table>';
+            document.getElementById('appreciation').innerHTML = html;
+        }
+
+        function calculateTotalReturn(salePrice, totalInvestment, annualCashFlow, loanAmount, interestRate, loanTerm, appreciationRate, improvedValuePct, marginalTaxRate) {
+            let html = '<h3 style="margin: 0 0 10px 0;">Total Return Analysis (5 Years)</h3>';
+            html += '<table class="results-table"><thead><tr><th>Source</th><th>Year 1</th><th>Year 2</th><th>Year 3</th><th>Year 4</th><th>Year 5</th></tr></thead><tbody>';
+
+            const improvedValue = salePrice * (improvedValuePct / 100);
+            const annualDepreciation = improvedValue / 27.5;
+
+            let balance = loanAmount;
+            const monthlyRate = (interestRate / 100) / 12;
+            const numPayments = loanTerm * 12;
+            const monthlyPayment = loanAmount * (monthlyRate * Math.pow(1 + monthlyRate, numPayments)) / (Math.pow(1 + monthlyRate, numPayments) - 1);
+
+            let cashFlowRow = '<tr><td><strong>Cash Flow</strong></td>';
+            let debtPaydownRow = '<tr><td><strong>Debt Paydown</strong></td>';
+            let taxSavingsRow = '<tr><td><strong>Tax Savings</strong></td>';
+            let appreciationRow = '<tr><td><strong>Appreciation</strong></td>';
+            let totalROIRow = '<tr class="total-row"><td><strong>Total ROI %</strong></td>';
+            let totalReturnRow = '<tr class="total-row"><td><strong>Total $ Return</strong></td>';
+
+            let value = salePrice;
+            for (let year = 1; year <= 5; year++) {
+                // Cash flow
+                const cashFlowROI = totalInvestment > 0 ? (annualCashFlow / totalInvestment) * 100 : 0;
+                cashFlowRow += `<td>${formatPercent(cashFlowROI)}</td>`;
+
+                // Debt paydown
+                let yearlyPrincipal = 0;
+                for (let month = 1; month <= 12; month++) {
+                    const interest = balance * monthlyRate;
+                    const principal = monthlyPayment - interest;
+                    balance -= principal;
+                    yearlyPrincipal += principal;
+                }
+                const debtROI = totalInvestment > 0 ? (yearlyPrincipal / totalInvestment) * 100 : 0;
+                debtPaydownRow += `<td>${formatPercent(debtROI)}</td>`;
+
+                // Tax savings
+                const annualInterest = (loanAmount - balance) * (interestRate / 100);
+                const taxDeduction = annualDepreciation + annualInterest;
+                const taxSavings = taxDeduction * (marginalTaxRate / 100);
+                const taxROI = totalInvestment > 0 ? (taxSavings / totalInvestment) * 100 : 0;
+                taxSavingsRow += `<td>${formatPercent(taxROI)}</td>`;
+
+                // Appreciation
+                const yearlyAppreciation = value * (appreciationRate / 100);
+                value += yearlyAppreciation;
+                const appROI = totalInvestment > 0 ? (yearlyAppreciation / totalInvestment) * 100 : 0;
+                appreciationRow += `<td>${formatPercent(appROI)}</td>`;
+
+                // Total
+                const totalROI = cashFlowROI + debtROI + taxROI + appROI;
+                const totalDollar = (totalROI / 100) * totalInvestment;
+                totalROIRow += `<td>${formatPercent(totalROI)}</td>`;
+                totalReturnRow += `<td>${formatCurrency(totalDollar)}</td>`;
+            }
+
+            cashFlowRow += '</tr>';
+            debtPaydownRow += '</tr>';
+            taxSavingsRow += '</tr>';
+            appreciationRow += '</tr>';
+            totalROIRow += '</tr>';
+            totalReturnRow += '</tr>';
+
+            html += cashFlowRow + debtPaydownRow + taxSavingsRow + appreciationRow + totalROIRow + totalReturnRow;
+            html += '</tbody></table>';
+            document.getElementById('totalreturn').innerHTML = html;
+        }
+
+        function calculateDCR(annualNOI, monthlyPayment, grossRent) {
+            const annualDebtService = monthlyPayment * 12;
+            const dcr = annualDebtService > 0 ? annualNOI / annualDebtService : 0;
+
+            let html = '<h3 style="margin: 0 0 10px 0;">Debt Coverage Ratio Analysis</h3>';
+            html += '<div class="metric"><span class="metric-label">Annual NOI</span><span class="metric-value">' + formatCurrency(annualNOI) + '</span></div>';
+            html += '<div class="metric"><span class="metric-label">Annual Debt Service</span><span class="metric-value">' + formatCurrency(annualDebtService) + '</span></div>';
+            html += '<div class="metric ' + (dcr >= 1.25 ? 'good' : 'poor') + '"><span class="metric-label"><strong>Debt Coverage Ratio</strong></span><span class="metric-value"><strong>' + dcr.toFixed(2) + '</strong></span></div>';
+            html += '<p style="margin-top: 15px; font-size: 0.9em; color: #6c757d;">Commercial lenders typically require a minimum DCR of 1.25. A DCR above 1.0 means the property generates enough income to cover the mortgage.</p>';
+
+            document.getElementById('dcr').innerHTML = html;
+        }
+
+        function calculateTaxDeductions(salePrice, improvedValuePct, loanAmount, interestRate, loanTerm, marginalTaxRate, annualCashFlow, totalInvestment) {
+            let html = '<h3 style="margin: 0 0 10px 0;">5-Year Tax Deduction Summary</h3>';
+            html += '<table class="results-table"><thead><tr><th>Year</th><th>Depreciation</th><th>Interest</th><th>Total Deduction</th><th>Tax Savings</th><th>ROI %</th></tr></thead><tbody>';
+
+            const improvedValue = salePrice * (improvedValuePct / 100);
+            const annualDepreciation = improvedValue / 27.5;
+
+            let balance = loanAmount;
+            const monthlyRate = (interestRate / 100) / 12;
+            const numPayments = loanTerm * 12;
+            const monthlyPayment = loanAmount * (monthlyRate * Math.pow(1 + monthlyRate, numPayments)) / (Math.pow(1 + monthlyRate, numPayments) - 1);
+
+            for (let year = 1; year <= 5; year++) {
+                let yearlyInterest = 0;
+                for (let month = 1; month <= 12; month++) {
+                    const interest = balance * monthlyRate;
+                    const principal = monthlyPayment - interest;
+                    balance -= principal;
+                    yearlyInterest += interest;
+                }
+
+                const totalDeduction = annualDepreciation + yearlyInterest;
+                const taxSavings = totalDeduction * (marginalTaxRate / 100);
+                const roi = totalInvestment > 0 ? (taxSavings / totalInvestment) * 100 : 0;
+                html += `<tr><td>Year ${year}</td><td>${formatCurrency(annualDepreciation)}</td><td>${formatCurrency(yearlyInterest)}</td><td>${formatCurrency(totalDeduction)}</td><td>${formatCurrency(taxSavings)}</td><td>${formatPercent(roi)}</td></tr>`;
+            }
+
+            html += '</tbody></table>';
+            html += '<p style="margin-top: 15px; font-size: 0.9em; color: #6c757d;"><strong>Note:</strong> Depreciation is calculated using straight-line method over 27.5 years for residential rental property. Consult a tax professional for your specific situation.</p>';
+            document.getElementById('taxdeductions').innerHTML = html;
+        }
+
+        function saveData() {
+            const data = {
+                salePrice: document.getElementById('salePrice').value,
+                downPayment: document.getElementById('downPayment').value,
+                interestRate: document.getElementById('interestRate').value,
+                loanTerm: document.getElementById('loanTerm').value,
+                closingCosts: document.getElementById('closingCosts').value,
+                grossRent: document.getElementById('grossRent').value,
+                propTax: document.getElementById('propTax').value,
+                insurance: document.getElementById('insurance').value,
+                gasElectric: document.getElementById('gasElectric').value,
+                water: document.getElementById('water').value,
+                sewer: document.getElementById('sewer').value,
+                garbage: document.getElementById('garbage').value,
+                lawnSnow: document.getElementById('lawnSnow').value,
+                vacancyPct: document.getElementById('vacancyPct').value,
+                propMgmtPct: document.getElementById('propMgmtPct').value,
+                maintenancePct: document.getElementById('maintenancePct').value,
+                rentGrowthRate: document.getElementById('rentGrowthRate').value,
+                appreciationRate: document.getElementById('appreciationRate').value,
+                improvedValuePct: document.getElementById('improvedValuePct').value,
+                marginalTaxRate: document.getElementById('marginalTaxRate').value
+            };
+            localStorage.setItem('rentalCalcData', JSON.stringify(data));
+            alert('✅ Data saved!');
+        }
+
+        function loadData() {
+            const saved = localStorage.getItem('rentalCalcData');
+            if (saved) {
+                const data = JSON.parse(saved);
+                Object.keys(data).forEach(key => {
+                    const el = document.getElementById(key);
+                    if (el) el.value = data[key];
+                });
+            }
+        }
+
+        function exportData() {
+            saveData();
+            const saved = localStorage.getItem('rentalCalcData');
+            if (saved) {
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(saved);
+                const downloadAnchorNode = document.createElement('a');
+                downloadAnchorNode.setAttribute("href", dataStr);
+                const address = document.getElementById('address').value || 'property';
+                downloadAnchorNode.setAttribute("download", `rental_calc_${address.replace(/[^a-z0-9]/gi, '_')}.json`);
+                document.body.appendChild(downloadAnchorNode);
+                downloadAnchorNode.click();
+                downloadAnchorNode.remove();
+            }
+        }
+
+        // Initialize
+        window.addEventListener('DOMContentLoaded', function() {
+            loadData();
+            calculate();
+        });
+    </script>
+</body>
+</html>
+
