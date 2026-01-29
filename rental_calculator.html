@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Rental Property Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        header h1 {
+            font-size: 2.2em;
+            margin-bottom: 5px;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+        
+        .input-section, .results-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+        }
+        
+        .section-title {
+            color: #2c3e50;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+        
+        input[type="number"], input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="number"]:focus, input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .input-prefix {
+            position: relative;
+        }
+        
+        .input-prefix input {
+            padding-left: 30px;
+        }
+        
+        .input-prefix::before {
+            content: "$";
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            font-weight: bold;
+        }
+        
+        .input-suffix {
+            position: relative;
+        }
+        
+        .input-suffix input {
+            padding-right: 35px;
+        }
+        
+        .input-suffix::after {
+            content: "%";
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            font-weight: bold;
+        }
+        
+        .calculate-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+        
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .calculate-btn:active {
+            transform: translateY(0);
+        }
+        
+        .metric-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .metric-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .metric-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .metric-value.positive {
+            color: #28a745;
+        }
+        
+        .metric-value.negative {
+            color: #dc3545;
+        }
+        
+        .metric-value.warning {
+            color: #ffc107;
+        }
+        
+        .full-width {
+            grid-column: 1 / -1;
+        }
+        
+        .expense-breakdown, .projection-table {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+        
+        .expense-breakdown h3, .projection-table h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .expense-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .expense-item:last-child {
+            border-bottom: none;
+            font-weight: bold;
+            padding-top: 15px;
+            border-top: 2px solid #2c3e50;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            color: #155724;
+        }
+        
+        .alert-warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            color: #856404;
+        }
+        
+        .alert-danger {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏘️ Interactive Rental Property Calculator</h1>
+            <p>Analyze your investment in real-time</p>
+        </header>
+        
+        <div class="main-content">
+            <!-- Input Section -->
+            <div class="input-section">
+                <h2 class="section-title">📝 Property Details</h2>
+                
+                <div class="form-group">
+                    <label for="propertyAddress">Property Address</label>
+                    <input type="text" id="propertyAddress" placeholder="123 Main Street, City, State">
+                </div>
+                
+                <div class="form-group">
+                    <label for="salePrice">Sale Price</label>
+                    <div class="input-prefix">
+                        <input type="number" id="salePrice" value="70000" step="1000">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="downPaymentPct">Down Payment (%)</label>
+                    <div class="input-suffix">
+                        <input type="number" id="downPaymentPct" value="20" step="1" min="0" max="100">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="interestRate">Interest Rate (%)</label>
+                    <div class="input-suffix">
+                        <input type="number" id="interestRate" value="3.75" step="0.125">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="loanTerm">Loan Term (Years)</label>
+                    <input type="number" id="loanTerm" value="25" step="1">
+                </div>
+                
+                <div class="form-group">
+                    <label for="closingCosts">Closing Costs</label>
+                    <div class="input-prefix">
+                        <input type="number" id="closingCosts" value="0" step="100">
+                    </div>
+                </div>
+
+                <h2 class="section-title" style="margin-top: 30px;">💰 Income & Expenses</h2>
+
+                <div class="form-group">
+                    <label for="grossRents">Gross Monthly Rents</label>
+                    <div class="input-prefix">
+                        <input type="number" id="grossRents" value="1000" step="50">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="vacancyRate">Vacancy Rate (%)</label>
+                    <div class="input-suffix">
+                        <input type="number" id="vacancyRate" value="10" step="1">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="propertyMgmt">Property Management (%)</label>
+                    <div class="input-suffix">
+                        <input type="number" id="propertyMgmt" value="8" step="1">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="propertyTax">Annual Property Tax</label>
+                    <div class="input-prefix">
+                        <input type="number" id="propertyTax" value="1400" step="100">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="insurance">Annual Insurance</label>
+                    <div class="input-prefix">
+                        <input type="number" id="insurance" value="420" step="50">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="maintenance">Maintenance & Utilities (%)</label>
+                    <div class="input-suffix">
+                        <input type="number" id="maintenance" value="20" step="1">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="cashReserves">Cash Reserves (%)</label>
+                    <div class="input-suffix">
+                        <input type="number" id="cashReserves" value="3" step="1">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="rentGrowth">Annual Rent Growth (%)</label>
+                    <div class="input-suffix">
+                        <input type="number" id="rentGrowth" value="3.5" step="0.5">
+                    </div>
+                </div>
+
+                <button class="calculate-btn" onclick="calculateInvestment()">🔢 Calculate Investment Returns</button>
+            </div>
+
+            <!-- Results Section -->
+            <div class="results-section">
+                <h2 class="section-title">📊 Investment Analysis</h2>
+
+                <div id="qualificationAlert"></div>
+
+                <div class="metric-card">
+                    <div class="metric-label">Capitalization Rate (Cap Rate)</div>
+                    <div class="metric-value" id="capRate">-</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-label">Cash-on-Cash Return (ROI)</div>
+                    <div class="metric-value" id="roi">-</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-label">Debt Coverage Ratio (DCR)</div>
+                    <div class="metric-value" id="dcr">-</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-label">Monthly Cash Flow</div>
+                    <div class="metric-value" id="cashFlow">-</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-label">Annual Net Operating Income (NOI)</div>
+                    <div class="metric-value" id="noi">-</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-label">Total Cash Invested</div>
+                    <div class="metric-value" id="totalInvested">-</div>
+                </div>
+
+                <div class="expense-breakdown">
+                    <h3>💵 Monthly Expense Breakdown</h3>
+                    <div class="expense-item">
+                        <span>Gross Rents</span>
+                        <span id="expGrossRents">$0</span>
+                    </div>
+                    <div class="expense-item">
+                        <span>Vacancy Loss</span>
+                        <span id="expVacancy">$0</span>
+                    </div>
+                    <div class="expense-item">
+                        <span>Property Management</span>
+                        <span id="expPropMgmt">$0</span>
+                    </div>
+                    <div class="expense-item">
+                        <span>Property Tax</span>
+                        <span id="expTax">$0</span>
+                    </div>
+                    <div class="expense-item">
+                        <span>Insurance</span>
+                        <span id="expInsurance">$0</span>
+                    </div>
+                    <div class="expense-item">
+                        <span>Maintenance & Utilities</span>
+                        <span id="expMaintenance">$0</span>
+                    </div>
+                    <div class="expense-item">
+                        <span>Cash Reserves</span>
+                        <span id="expReserves">$0</span>
+                    </div>
+                    <div class="expense-item">
+                        <span>Total Operating Expenses</span>
+                        <span id="expTotal">$0</span>
+                    </div>
+                    <div class="expense-item">
+                        <span>Monthly NOI</span>
+                        <span id="expNOI">$0</span>
+                    </div>
+                    <div class="expense-item">
+                        <span>Mortgage Payment</span>
+                        <span id="expMortgage">$0</span>
+                    </div>
+                    <div class="expense-item">
+                        <span>Monthly Net Cash Flow</span>
+                        <span id="expCashFlow">$0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rent Growth Projection -->
+            <div class="input-section full-width">
+                <h2 class="section-title">📈 20-Year Rent Growth Projection</h2>
+                <div class="projection-table">
+                    <table id="rentGrowthTable">
+                        <thead>
+                            <tr>
+                                <th>Year</th>
+                                <th>Market Rent</th>
+                                <th>Annual Income</th>
+                                <th>% Increase</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rentGrowthBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 5-Year Debt Paydown -->
+            <div class="results-section full-width">
+                <h2 class="section-title">💳 5-Year Debt Paydown Summary</h2>
+                <div class="projection-table">
+                    <table id="debtPaydownTable">
+                        <thead>
+                            <tr>
+                                <th>Year</th>
+                                <th>Principal Paid</th>
+                                <th>Interest Paid</th>
+                                <th>Total Paid</th>
+                                <th>Remaining Balance</th>
+                                <th>ROI on Paydown</th>
+                            </tr>
+                        </thead>
+                        <tbody id="debtPaydownBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calculateInvestment() {
+            // Get input values
+            const salePrice = parseFloat(document.getElementById('salePrice').value) || 0;
+            const downPaymentPct = parseFloat(document.getElementById('downPaymentPct').value) || 0;
+            const interestRate = parseFloat(document.getElementById('interestRate').value) || 0;
+            const loanTerm = parseFloat(document.getElementById('loanTerm').value) || 0;
+            const closingCosts = parseFloat(document.getElementById('closingCosts').value) || 0;
+            const grossRents = parseFloat(document.getElementById('grossRents').value) || 0;
+            const vacancyRate = parseFloat(document.getElementById('vacancyRate').value) || 0;
+            const propertyMgmt = parseFloat(document.getElementById('propertyMgmt').value) || 0;
+            const propertyTax = parseFloat(document.getElementById('propertyTax').value) || 0;
+            const insurance = parseFloat(document.getElementById('insurance').value) || 0;
+            const maintenance = parseFloat(document.getElementById('maintenance').value) || 0;
+            const cashReserves = parseFloat(document.getElementById('cashReserves').value) || 0;
+            const rentGrowth = parseFloat(document.getElementById('rentGrowth').value) || 0;
+
+            // Calculate loan details
+            const downPayment = salePrice * (downPaymentPct / 100);
+            const principal = salePrice - downPayment;
+            const monthlyRate = (interestRate / 100) / 12;
+            const numPayments = loanTerm * 12;
+
+            // Monthly mortgage payment (P&I)
+            const monthlyMortgage = principal * (monthlyRate * Math.pow(1 + monthlyRate, numPayments)) /
+                                   (Math.pow(1 + monthlyRate, numPayments) - 1);
+
+            // Monthly expenses
+            const vacancyLoss = grossRents * (vacancyRate / 100);
+            const propMgmtFee = grossRents * (propertyMgmt / 100);
+            const monthlyTax = propertyTax / 12;
+            const monthlyInsurance = insurance / 12;
+            const maintenanceFee = grossRents * (maintenance / 100);
+            const reservesFee = grossRents * (cashReserves / 100);
+
+            const totalExpenses = vacancyLoss + propMgmtFee + monthlyTax + monthlyInsurance + maintenanceFee + reservesFee;
+            const monthlyNOI = grossRents - totalExpenses;
+            const monthlyCashFlow = monthlyNOI - monthlyMortgage;
+
+            // Annual figures
+            const annualNOI = monthlyNOI * 12;
+            const annualCashFlow = monthlyCashFlow * 12;
+            const annualDebtService = monthlyMortgage * 12;
+
+            // Investment metrics
+            const totalInvested = downPayment + closingCosts;
+            const capRate = (annualNOI / salePrice) * 100;
+            const cashOnCashROI = (annualCashFlow / totalInvested) * 100;
+            const debtCoverageRatio = annualNOI / annualDebtService;
+
+            // Update results
+            document.getElementById('capRate').textContent = capRate.toFixed(2) + '%';
+            document.getElementById('roi').textContent = cashOnCashROI.toFixed(2) + '%';
+            document.getElementById('dcr').textContent = debtCoverageRatio.toFixed(2);
+            document.getElementById('cashFlow').textContent = formatCurrency(monthlyCashFlow);
+            document.getElementById('noi').textContent = formatCurrency(annualNOI);
+            document.getElementById('totalInvested').textContent = formatCurrency(totalInvested);
+
+            // Color code metrics
+            document.getElementById('capRate').className = 'metric-value ' + (capRate >= 8 ? 'positive' : capRate >= 5 ? 'warning' : 'negative');
+            document.getElementById('roi').className = 'metric-value ' + (cashOnCashROI >= 12 ? 'positive' : cashOnCashROI >= 8 ? 'warning' : 'negative');
+            document.getElementById('dcr').className = 'metric-value ' + (debtCoverageRatio >= 1.25 ? 'positive' : debtCoverageRatio >= 1.0 ? 'warning' : 'negative');
+            document.getElementById('cashFlow').className = 'metric-value ' + (monthlyCashFlow > 0 ? 'positive' : 'negative');
+
+            // Update expense breakdown
+            document.getElementById('expGrossRents').textContent = formatCurrency(grossRents);
+            document.getElementById('expVacancy').textContent = formatCurrency(vacancyLoss);
+            document.getElementById('expPropMgmt').textContent = formatCurrency(propMgmtFee);
+            document.getElementById('expTax').textContent = formatCurrency(monthlyTax);
+            document.getElementById('expInsurance').textContent = formatCurrency(monthlyInsurance);
+            document.getElementById('expMaintenance').textContent = formatCurrency(maintenanceFee);
+            document.getElementById('expReserves').textContent = formatCurrency(reservesFee);
+            document.getElementById('expTotal').textContent = formatCurrency(totalExpenses);
+            document.getElementById('expNOI').textContent = formatCurrency(monthlyNOI);
+            document.getElementById('expMortgage').textContent = formatCurrency(monthlyMortgage);
+            document.getElementById('expCashFlow').textContent = formatCurrency(monthlyCashFlow);
+
+            // Qualification alert
+            let alertHTML = '';
+            if (debtCoverageRatio >= 1.25) {
+                alertHTML = '<div class="alert alert-success"><strong>✓ Qualifies for Commercial Loan</strong><br>Debt Coverage Ratio: ' + debtCoverageRatio.toFixed(2) + ' (Required: 1.25)</div>';
+            } else {
+                alertHTML = '<div class="alert alert-danger"><strong>✗ Does Not Qualify for Commercial Loan</strong><br>Debt Coverage Ratio: ' + debtCoverageRatio.toFixed(2) + ' (Required: 1.25)</div>';
+            }
+            document.getElementById('qualificationAlert').innerHTML = alertHTML;
+
+            // Generate rent growth projection
+            generateRentGrowthTable(grossRents, rentGrowth);
+
+            // Generate debt paydown table
+            generateDebtPaydownTable(principal, monthlyRate, monthlyMortgage, totalInvested);
+        }
+
+        function generateRentGrowthTable(initialRent, growthRate) {
+            const tbody = document.getElementById('rentGrowthBody');
+            tbody.innerHTML = '';
+
+            let currentRent = initialRent;
+
+            for (let year = 1; year <= 20; year++) {
+                const annualIncome = currentRent * 12;
+                const percentIncrease = year === 1 ? 0 : growthRate;
+
+                const row = tbody.insertRow();
+                row.insertCell(0).textContent = year;
+                row.insertCell(1).textContent = formatCurrency(currentRent);
+                row.insertCell(2).textContent = formatCurrency(annualIncome);
+                row.insertCell(3).textContent = percentIncrease.toFixed(2) + '%';
+
+                currentRent = currentRent * (1 + growthRate / 100);
+            }
+        }
+
+        function generateDebtPaydownTable(principal, monthlyRate, monthlyPayment, totalInvested) {
+            const tbody = document.getElementById('debtPaydownBody');
+            tbody.innerHTML = '';
+
+            let remainingBalance = principal;
+
+            for (let year = 1; year <= 5; year++) {
+                let yearlyPrincipal = 0;
+                let yearlyInterest = 0;
+
+                for (let month = 1; month <= 12; month++) {
+                    const interestPayment = remainingBalance * monthlyRate;
+                    const principalPayment = monthlyPayment - interestPayment;
+
+                    yearlyPrincipal += principalPayment;
+                    yearlyInterest += interestPayment;
+                    remainingBalance -= principalPayment;
+                }
+
+                const totalPaid = yearlyPrincipal + yearlyInterest;
+                const roiOnPaydown = (yearlyPrincipal / totalInvested) * 100;
+
+                const row = tbody.insertRow();
+                row.insertCell(0).textContent = year;
+                row.insertCell(1).textContent = formatCurrency(yearlyPrincipal);
+                row.insertCell(2).textContent = formatCurrency(yearlyInterest);
+                row.insertCell(3).textContent = formatCurrency(totalPaid);
+                row.insertCell(4).textContent = formatCurrency(remainingBalance);
+                row.insertCell(5).textContent = roiOnPaydown.toFixed(2) + '%';
+            }
+        }
+
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(value);
+        }
+
+        // Calculate on page load
+        window.onload = function() {
+            calculateInvestment();
+        };
+
+        // Add real-time calculation on input change
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('input[type="number"]');
+            inputs.forEach(input => {
+                input.addEventListener('input', calculateInvestment);
+            });
+        });
+    </script>
+

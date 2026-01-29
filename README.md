@@ -19,6 +19,18 @@ Special inputs for foreign investors with Canadian averages:
 - **Currency Exchange Loss** (Avg: 2%) - USD/CAD conversion costs on rent collection
 - **FIRPTA Withholding** (Standard: 15%) - Foreign Investment in Real Property Tax Act withholding on sale
 - **Foreign Investment Tax** - Additional tax burden for non-US citizens
+Tax Prep Fees/Yr (Avg: $1,500)
+Default: $1,500/year
+Covers cost of US tax return (1040-NR) + Canadian cross-border tax prep
+Currency Exchange Loss % (Avg: 2%)
+Default: 2%
+Applied to monthly rent collection (USD → CAD conversion fees)
+Accounts for bank fees and exchange rate spreads
+FIRPTA Withholding % (Standard: 15%)
+Default: 15%
+Foreign Investment in Real Property Tax Act withholding
+Shows in Appreciation tab when you sell the property
+
 
 ### 💾 Data Management
 - Save/Load property data using browser localStorage
