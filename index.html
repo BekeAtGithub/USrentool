@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rental Property Calculator</title>
+    <title>EU Rental Property Calculator</title>
     <style>
         * {
             margin: 0;
@@ -255,8 +255,8 @@
 </head>
 <body>
     <div class="container">
-        <h1>🏘️ Rental Property Calculator</h1>
-        <p class="subtitle">Enter numbers, get instant analysis</p>
+        <h1>🏘️ EU Rental Property Calculator</h1>
+        <p class="subtitle">European Real Estate Investment Analysis</p>
 
         <div class="calculator-grid">
             <!-- LEFT SIDE: INPUTS (BLUE FIELDS) -->
@@ -281,8 +281,8 @@
                 </div>
 
                 <div class="form-field">
-                    <label>Interest Rate %</label>
-                    <input type="number" id="interestRate" value="7.5" step="0.1" oninput="calculate()">
+                    <label>Interest Rate % <span style="font-size: 0.85em; color: #666;">💡 EU avg: 3.5-4.5%</span></label>
+                    <input type="number" id="interestRate" value="4.0" step="0.1" oninput="calculate()">
                 </div>
 
                 <div class="form-field">
@@ -291,8 +291,8 @@
                 </div>
 
                 <div class="form-field">
-                    <label>Closing Costs</label>
-                    <input type="number" id="closingCosts" value="3000" oninput="calculate()">
+                    <label>Closing Costs (€) <span style="font-size: 0.85em; color: #666;">💡 Transfer tax: 3-12% of price</span></label>
+                    <input type="number" id="closingCosts" value="5000" oninput="calculate()">
                 </div>
 
                 <h3>Income</h3>
@@ -367,50 +367,13 @@
                 </div>
 
                 <div class="form-field">
-                    <label>Improved Value %</label>
+                    <label>Improved Value % <span style="font-size: 0.85em; color: #666;">💡 Varies by country</span></label>
                     <input type="number" id="improvedValuePct" value="80" step="1" oninput="calculate()">
                 </div>
 
                 <div class="form-field">
-                    <label>Marginal Tax Rate %</label>
-                    <input type="number" id="marginalTaxRate" value="25" step="1" oninput="calculate()">
-                </div>
-
-                <div class="form-field">
-                    <label>Foreign Investment Tax %</label>
-                    <input type="number" id="foreignTaxRate" value="0" step="0.1" oninput="calculate()">
-                </div>
-
-                <h3>Foreign Investor Costs (Canadian Avg)</h3>
-
-                <div class="form-field">
-                    <label>US 1040-NR Tax Return/Yr (Avg: $500)</label>
-                    <input type="number" id="fee1040NR" value="500" oninput="calculate()">
-                </div>
-
-                <div class="form-field">
-                    <label>W-8ECI Form Prep/Yr (Avg: $150)</label>
-                    <input type="number" id="feeW8ECI" value="150" oninput="calculate()">
-                </div>
-
-                <div class="form-field">
-                    <label>Canadian T1 Adjustments/Yr (Avg: $200)</label>
-                    <input type="number" id="feeT1" value="200" oninput="calculate()">
-                </div>
-
-                <div class="form-field">
-                    <label>ITIN Application (One-time, Year 1) (Avg: $250)</label>
-                    <input type="number" id="feeITIN" value="250" oninput="calculate()">
-                </div>
-
-                <div class="form-field">
-                    <label>Currency Exchange Loss % (Avg: 2%)</label>
-                    <input type="number" id="currencyExchangePct" value="2" step="0.1" oninput="calculate()">
-                </div>
-
-                <div class="form-field">
-                    <label>FIRPTA Withholding % (Standard: 15%)</label>
-                    <input type="number" id="firptaRate" value="15" step="0.1" oninput="calculate()">
+                    <label>Marginal Tax Rate % <span style="font-size: 0.85em; color: #666;">💡 EU range: 15-50%</span></label>
+                    <input type="number" id="marginalTaxRate" value="30" step="1" oninput="calculate()">
                 </div>
             </div>
 
@@ -461,7 +424,7 @@
         }
 
         function formatCurrency(value) {
-            return '$' + value.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+            return '€' + value.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
         }
 
         function formatPercent(value) {
@@ -490,13 +453,6 @@
             const appreciationRate = parseFloat(document.getElementById('appreciationRate').value) || 0;
             const improvedValuePct = parseFloat(document.getElementById('improvedValuePct').value) || 0;
             const marginalTaxRate = parseFloat(document.getElementById('marginalTaxRate').value) || 0;
-            const foreignTaxRate = parseFloat(document.getElementById('foreignTaxRate').value) || 0;
-            const fee1040NR = parseFloat(document.getElementById('fee1040NR').value) || 0;
-            const feeW8ECI = parseFloat(document.getElementById('feeW8ECI').value) || 0;
-            const feeT1 = parseFloat(document.getElementById('feeT1').value) || 0;
-            const feeITIN = parseFloat(document.getElementById('feeITIN').value) || 0;
-            const currencyExchangePct = parseFloat(document.getElementById('currencyExchangePct').value) || 0;
-            const firptaRate = parseFloat(document.getElementById('firptaRate').value) || 0;
 
             // Calculate loan
             const downPayment = salePrice * (downPaymentPct / 100);
@@ -532,21 +488,10 @@
             const monthlyNet = monthlyNOI - monthlyMortgage;
             const annualNet = monthlyNet * 12;
 
-            // Apply foreign investor costs
-            const foreignTaxAmount = annualNet * (foreignTaxRate / 100);
-            const totalTaxPrepFees = fee1040NR + feeW8ECI + feeT1 + feeITIN;
-            const monthlyTaxPrepFees = totalTaxPrepFees / 12;
-            const currencyExchangeLoss = grossRent * (currencyExchangePct / 100);
-            const totalForeignCosts = foreignTaxAmount + totalTaxPrepFees + (currencyExchangeLoss * 12);
-
-            const annualNetAfterForeignCosts = annualNet - totalForeignCosts;
-            const monthlyNetAfterForeignCosts = annualNetAfterForeignCosts / 12;
-
             // Calculate metrics
             const totalInvested = downPayment + closingCosts;
             const capRate = salePrice > 0 ? (annualNOI / salePrice) * 100 : 0;
             const annualizedROI = totalInvested > 0 ? (annualNet / totalInvested) * 100 : 0;
-            const annualizedROIAfterForeignCosts = totalInvested > 0 ? (annualNetAfterForeignCosts / totalInvested) * 100 : 0;
             const annualDebtService = monthlyMortgage * 12;
             const dcr = annualDebtService > 0 ? annualNOI / annualDebtService : 0;
 
@@ -623,61 +568,6 @@
                     <span class="metric-label"><strong>Annualized ROI</strong></span>
                     <span class="metric-value"><strong>${annualizedROI.toFixed(2)}%</strong></span>
                 </div>
-                ${(foreignTaxRate > 0 || totalTaxPrepFees > 0 || currencyExchangePct > 0) ? `
-                    <h3 style="margin: 15px 0 8px 0; font-size: 0.95em;">Foreign Investor Costs (Canadian)</h3>
-                    ${foreignTaxRate > 0 ? `
-                        <div class="metric">
-                            <span class="metric-label">Foreign Tax (${foreignTaxRate}%)</span>
-                            <span class="metric-value" style="color: #dc3545;">-$${foreignTaxAmount.toFixed(2)}/yr</span>
-                        </div>
-                    ` : ''}
-                    ${fee1040NR > 0 ? `
-                        <div class="metric">
-                            <span class="metric-label">US 1040-NR Tax Return</span>
-                            <span class="metric-value" style="color: #dc3545;">-$${fee1040NR.toFixed(2)}/yr</span>
-                        </div>
-                    ` : ''}
-                    ${feeW8ECI > 0 ? `
-                        <div class="metric">
-                            <span class="metric-label">W-8ECI Form Prep</span>
-                            <span class="metric-value" style="color: #dc3545;">-$${feeW8ECI.toFixed(2)}/yr</span>
-                        </div>
-                    ` : ''}
-                    ${feeT1 > 0 ? `
-                        <div class="metric">
-                            <span class="metric-label">Canadian T1 Adjustments</span>
-                            <span class="metric-value" style="color: #dc3545;">-$${feeT1.toFixed(2)}/yr</span>
-                        </div>
-                    ` : ''}
-                    ${feeITIN > 0 ? `
-                        <div class="metric">
-                            <span class="metric-label">ITIN Application (Year 1)</span>
-                            <span class="metric-value" style="color: #dc3545;">-$${feeITIN.toFixed(2)}</span>
-                        </div>
-                    ` : ''}
-                    ${currencyExchangePct > 0 ? `
-                        <div class="metric">
-                            <span class="metric-label">Currency Exchange Loss (${currencyExchangePct}%)</span>
-                            <span class="metric-value" style="color: #dc3545;">-$${(currencyExchangeLoss * 12).toFixed(2)}/yr</span>
-                        </div>
-                    ` : ''}
-                    <div class="metric">
-                        <span class="metric-label"><strong>Total Foreign Costs</strong></span>
-                        <span class="metric-value" style="color: #dc3545;"><strong>-$${totalForeignCosts.toFixed(2)}/yr</strong></span>
-                    </div>
-                    <div class="metric ${monthlyNetAfterForeignCosts > 0 ? 'good' : 'poor'}">
-                        <span class="metric-label"><strong>Monthly Net (After Foreign Costs)</strong></span>
-                        <span class="metric-value"><strong>$${monthlyNetAfterForeignCosts.toFixed(2)}</strong></span>
-                    </div>
-                    <div class="metric ${annualNetAfterForeignCosts > 0 ? 'good' : 'poor'}">
-                        <span class="metric-label"><strong>Annual Net (After Foreign Costs)</strong></span>
-                        <span class="metric-value"><strong>$${annualNetAfterForeignCosts.toFixed(2)}</strong></span>
-                    </div>
-                    <div class="metric ${annualizedROIAfterForeignCosts >= 15 ? 'good' : annualizedROIAfterForeignCosts >= 8 ? 'warning' : 'poor'}">
-                        <span class="metric-label"><strong>ROI (After Foreign Costs)</strong></span>
-                        <span class="metric-value"><strong>${annualizedROIAfterForeignCosts.toFixed(2)}%</strong></span>
-                    </div>
-                ` : ''}
             `;
 
             document.getElementById('proforma').innerHTML = resultsHTML;
@@ -685,10 +575,10 @@
             // Calculate all other analytics
             calculateDebtPaydown(loanAmount, interestRate, loanTerm, totalInvested);
             calculateRentGrowth(grossRent, rentGrowthRate);
-            calculateAppreciation(salePrice, appreciationRate, totalInvested, firptaRate);
-            calculateTotalReturn(salePrice, totalInvested, annualNet, loanAmount, interestRate, loanTerm, appreciationRate, improvedValuePct, marginalTaxRate, foreignTaxRate);
+            calculateAppreciation(salePrice, appreciationRate, totalInvested);
+            calculateTotalReturn(salePrice, totalInvested, annualNet, loanAmount, interestRate, loanTerm, appreciationRate, improvedValuePct, marginalTaxRate);
             calculateDCR(annualNOI, monthlyMortgage, grossRent);
-            calculateTaxDeductions(salePrice, improvedValuePct, loanAmount, interestRate, loanTerm, marginalTaxRate, foreignTaxRate, annualNet, totalInvested);
+            calculateTaxDeductions(salePrice, improvedValuePct, loanAmount, interestRate, loanTerm, marginalTaxRate, annualNet, totalInvested);
         }
 
         function calculateDebtPaydown(loanAmount, interestRate, loanTerm, totalInvestment) {
@@ -734,7 +624,7 @@
             document.getElementById('rentgrowth').innerHTML = html;
         }
 
-        function calculateAppreciation(salePrice, appreciationRate, totalInvestment, firptaRate) {
+        function calculateAppreciation(salePrice, appreciationRate, totalInvestment) {
             let html = '<h3 style="margin: 0 0 10px 0;">5-Year Property Appreciation</h3>';
             html += '<table class="results-table"><thead><tr><th>Year</th><th>Property Value</th><th>Appreciation</th><th>ROI %</th></tr></thead><tbody>';
 
@@ -749,28 +639,15 @@
             }
 
             html += '</tbody></table>';
-
-            // Add FIRPTA withholding note for foreign investors
-            if (firptaRate > 0) {
-                const year5Value = salePrice * Math.pow(1 + appreciationRate / 100, 5);
-                const firptaWithholding = year5Value * (firptaRate / 100);
-                html += `<div style="margin-top: 15px; padding: 12px; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px;">
-                    <p style="margin: 0 0 8px 0; font-weight: bold; color: #856404;">⚠️ FIRPTA Withholding (Foreign Investors)</p>
-                    <p style="margin: 0 0 5px 0; font-size: 0.9em; color: #856404;">If you sell in Year 5 at <strong>${formatCurrency(year5Value)}</strong>:</p>
-                    <p style="margin: 0 0 5px 0; font-size: 0.9em; color: #856404;">• FIRPTA Withholding (${firptaRate}%): <strong>${formatCurrency(firptaWithholding)}</strong></p>
-                    <p style="margin: 0; font-size: 0.85em; color: #856404; font-style: italic;">Note: This is withheld at closing, not your final tax. File US tax return to get refund of overpayment.</p>
-                </div>`;
-            }
-
             document.getElementById('appreciation').innerHTML = html;
         }
 
-        function calculateTotalReturn(salePrice, totalInvestment, annualCashFlow, loanAmount, interestRate, loanTerm, appreciationRate, improvedValuePct, marginalTaxRate, foreignTaxRate) {
+        function calculateTotalReturn(salePrice, totalInvestment, annualCashFlow, loanAmount, interestRate, loanTerm, appreciationRate, improvedValuePct, marginalTaxRate) {
             let html = '<h3 style="margin: 0 0 10px 0;">Total Return Analysis (5 Years)</h3>';
             html += '<table class="results-table"><thead><tr><th>Source</th><th>Year 1</th><th>Year 2</th><th>Year 3</th><th>Year 4</th><th>Year 5</th></tr></thead><tbody>';
 
             const improvedValue = salePrice * (improvedValuePct / 100);
-            const annualDepreciation = improvedValue / 27.5;
+            const annualDepreciation = improvedValue / 40; // EU average depreciation period
 
             let balance = loanAmount;
             const monthlyRate = (interestRate / 100) / 12;
@@ -780,7 +657,6 @@
             let cashFlowRow = '<tr><td><strong>Cash Flow</strong></td>';
             let debtPaydownRow = '<tr><td><strong>Debt Paydown</strong></td>';
             let taxSavingsRow = '<tr><td><strong>Tax Savings</strong></td>';
-            let foreignTaxRow = foreignTaxRate > 0 ? '<tr><td><strong>Foreign Tax</strong></td>' : '';
             let appreciationRow = '<tr><td><strong>Appreciation</strong></td>';
             let totalROIRow = '<tr class="total-row"><td><strong>Total ROI %</strong></td>';
             let totalReturnRow = '<tr class="total-row"><td><strong>Total $ Return</strong></td>';
@@ -809,22 +685,14 @@
                 const taxROI = totalInvestment > 0 ? (taxSavings / totalInvestment) * 100 : 0;
                 taxSavingsRow += `<td>${formatPercent(taxROI)}</td>`;
 
-                // Foreign tax (negative impact)
-                if (foreignTaxRate > 0) {
-                    const foreignTaxAmount = annualCashFlow * (foreignTaxRate / 100);
-                    const foreignTaxROI = totalInvestment > 0 ? -(foreignTaxAmount / totalInvestment) * 100 : 0;
-                    foreignTaxRow += `<td style="color: #dc3545;">${formatPercent(foreignTaxROI)}</td>`;
-                }
-
                 // Appreciation
                 const yearlyAppreciation = value * (appreciationRate / 100);
                 value += yearlyAppreciation;
                 const appROI = totalInvestment > 0 ? (yearlyAppreciation / totalInvestment) * 100 : 0;
                 appreciationRow += `<td>${formatPercent(appROI)}</td>`;
 
-                // Total (subtract foreign tax if applicable)
-                const foreignTaxImpact = foreignTaxRate > 0 ? -(annualCashFlow * (foreignTaxRate / 100) / totalInvestment) * 100 : 0;
-                const totalROI = cashFlowROI + debtROI + taxROI + foreignTaxImpact + appROI;
+                // Total
+                const totalROI = cashFlowROI + debtROI + taxROI + appROI;
                 const totalDollar = (totalROI / 100) * totalInvestment;
                 totalROIRow += `<td>${formatPercent(totalROI)}</td>`;
                 totalReturnRow += `<td>${formatCurrency(totalDollar)}</td>`;
@@ -833,14 +701,11 @@
             cashFlowRow += '</tr>';
             debtPaydownRow += '</tr>';
             taxSavingsRow += '</tr>';
-            if (foreignTaxRate > 0) foreignTaxRow += '</tr>';
             appreciationRow += '</tr>';
             totalROIRow += '</tr>';
             totalReturnRow += '</tr>';
 
-            html += cashFlowRow + debtPaydownRow + taxSavingsRow;
-            if (foreignTaxRate > 0) html += foreignTaxRow;
-            html += appreciationRow + totalROIRow + totalReturnRow;
+            html += cashFlowRow + debtPaydownRow + taxSavingsRow + appreciationRow + totalROIRow + totalReturnRow;
             html += '</tbody></table>';
             document.getElementById('totalreturn').innerHTML = html;
         }
@@ -858,15 +723,12 @@
             document.getElementById('dcr').innerHTML = html;
         }
 
-        function calculateTaxDeductions(salePrice, improvedValuePct, loanAmount, interestRate, loanTerm, marginalTaxRate, foreignTaxRate, annualCashFlow, totalInvestment) {
+        function calculateTaxDeductions(salePrice, improvedValuePct, loanAmount, interestRate, loanTerm, marginalTaxRate, annualCashFlow, totalInvestment) {
             let html = '<h3 style="margin: 0 0 10px 0;">5-Year Tax Deduction Summary</h3>';
-            const headers = foreignTaxRate > 0
-                ? '<thead><tr><th>Year</th><th>Depreciation</th><th>Interest</th><th>Total Deduction</th><th>Tax Savings</th><th>Foreign Tax</th><th>Net Tax Impact</th><th>ROI %</th></tr></thead>'
-                : '<thead><tr><th>Year</th><th>Depreciation</th><th>Interest</th><th>Total Deduction</th><th>Tax Savings</th><th>ROI %</th></tr></thead>';
-            html += '<table class="results-table">' + headers + '<tbody>';
+            html += '<table class="results-table"><thead><tr><th>Year</th><th>Depreciation</th><th>Interest</th><th>Total Deduction</th><th>Tax Savings</th><th>ROI %</th></tr></thead><tbody>';
 
             const improvedValue = salePrice * (improvedValuePct / 100);
-            const annualDepreciation = improvedValue / 27.5;
+            const annualDepreciation = improvedValue / 40; // EU average depreciation period
 
             let balance = loanAmount;
             const monthlyRate = (interestRate / 100) / 12;
@@ -884,20 +746,12 @@
 
                 const totalDeduction = annualDepreciation + yearlyInterest;
                 const taxSavings = totalDeduction * (marginalTaxRate / 100);
-
-                if (foreignTaxRate > 0) {
-                    const foreignTaxAmount = annualCashFlow * (foreignTaxRate / 100);
-                    const netTaxImpact = taxSavings - foreignTaxAmount;
-                    const roi = totalInvestment > 0 ? (netTaxImpact / totalInvestment) * 100 : 0;
-                    html += `<tr><td>Year ${year}</td><td>${formatCurrency(annualDepreciation)}</td><td>${formatCurrency(yearlyInterest)}</td><td>${formatCurrency(totalDeduction)}</td><td>${formatCurrency(taxSavings)}</td><td style="color: #dc3545;">${formatCurrency(foreignTaxAmount)}</td><td>${formatCurrency(netTaxImpact)}</td><td>${formatPercent(roi)}</td></tr>`;
-                } else {
-                    const roi = totalInvestment > 0 ? (taxSavings / totalInvestment) * 100 : 0;
-                    html += `<tr><td>Year ${year}</td><td>${formatCurrency(annualDepreciation)}</td><td>${formatCurrency(yearlyInterest)}</td><td>${formatCurrency(totalDeduction)}</td><td>${formatCurrency(taxSavings)}</td><td>${formatPercent(roi)}</td></tr>`;
-                }
+                const roi = totalInvestment > 0 ? (taxSavings / totalInvestment) * 100 : 0;
+                html += `<tr><td>Year ${year}</td><td>${formatCurrency(annualDepreciation)}</td><td>${formatCurrency(yearlyInterest)}</td><td>${formatCurrency(totalDeduction)}</td><td>${formatCurrency(taxSavings)}</td><td>${formatPercent(roi)}</td></tr>`;
             }
 
             html += '</tbody></table>';
-            html += '<p style="margin-top: 15px; font-size: 0.9em; color: #6c757d;"><strong>Note:</strong> Depreciation is calculated using straight-line method over 27.5 years for residential rental property. Consult a tax professional for your specific situation.</p>';
+            html += '<p style="margin-top: 15px; font-size: 0.9em; color: #6c757d;"><strong>Note:</strong> Depreciation is calculated using straight-line method over 40 years (EU average). Actual depreciation periods vary by country (33-68 years). Consult a tax professional for your specific country.</p>';
             document.getElementById('taxdeductions').innerHTML = html;
         }
 
@@ -922,14 +776,7 @@
                 rentGrowthRate: document.getElementById('rentGrowthRate').value,
                 appreciationRate: document.getElementById('appreciationRate').value,
                 improvedValuePct: document.getElementById('improvedValuePct').value,
-                marginalTaxRate: document.getElementById('marginalTaxRate').value,
-                foreignTaxRate: document.getElementById('foreignTaxRate').value,
-                fee1040NR: document.getElementById('fee1040NR').value,
-                feeW8ECI: document.getElementById('feeW8ECI').value,
-                feeT1: document.getElementById('feeT1').value,
-                feeITIN: document.getElementById('feeITIN').value,
-                currencyExchangePct: document.getElementById('currencyExchangePct').value,
-                firptaRate: document.getElementById('firptaRate').value
+                marginalTaxRate: document.getElementById('marginalTaxRate').value
             };
             localStorage.setItem('rentalCalcData', JSON.stringify(data));
             alert('✅ Data saved!');
@@ -966,7 +813,719 @@
             loadData();
             calculate();
         });
+
+        // Country guide tab switching
+        function showCountryGuide(country) {
+            const guides = document.querySelectorAll('.country-guide-content');
+            const tabs = document.querySelectorAll('.country-tab');
+
+            guides.forEach(guide => guide.style.display = 'none');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            document.getElementById(country).style.display = 'block';
+            event.target.classList.add('active');
+        }
     </script>
+
+    <!-- COUNTRY-SPECIFIC GUIDANCE SECTION -->
+    <div style="max-width: 1400px; margin: 40px auto; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h2 style="margin: 0 0 10px 0; color: #2c3e50;">📍 Country-Specific Guidance</h2>
+        <p style="margin: 0 0 20px 0; color: #666; font-size: 0.95em;">Select your country below to see recommended calculator settings based on local market conditions and tax laws.</p>
+
+        <!-- Country Tabs -->
+        <div style="display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 20px; border-bottom: 2px solid #e0e0e0; padding-bottom: 10px;">
+            <button class="country-tab active" onclick="showCountryGuide('austria')">Austria</button>
+            <button class="country-tab" onclick="showCountryGuide('belgium')">Belgium</button>
+            <button class="country-tab" onclick="showCountryGuide('bulgaria')">Bulgaria</button>
+            <button class="country-tab" onclick="showCountryGuide('croatia')">Croatia</button>
+            <button class="country-tab" onclick="showCountryGuide('cyprus')">Cyprus</button>
+            <button class="country-tab" onclick="showCountryGuide('czechia')">Czech Republic</button>
+            <button class="country-tab" onclick="showCountryGuide('denmark')">Denmark</button>
+            <button class="country-tab" onclick="showCountryGuide('estonia')">Estonia</button>
+            <button class="country-tab" onclick="showCountryGuide('finland')">Finland</button>
+            <button class="country-tab" onclick="showCountryGuide('france')">France</button>
+            <button class="country-tab" onclick="showCountryGuide('germany')">Germany</button>
+            <button class="country-tab" onclick="showCountryGuide('greece')">Greece</button>
+            <button class="country-tab" onclick="showCountryGuide('hungary')">Hungary</button>
+            <button class="country-tab" onclick="showCountryGuide('ireland')">Ireland</button>
+            <button class="country-tab" onclick="showCountryGuide('italy')">Italy</button>
+            <button class="country-tab" onclick="showCountryGuide('latvia')">Latvia</button>
+            <button class="country-tab" onclick="showCountryGuide('lithuania')">Lithuania</button>
+            <button class="country-tab" onclick="showCountryGuide('luxembourg')">Luxembourg</button>
+            <button class="country-tab" onclick="showCountryGuide('malta')">Malta</button>
+            <button class="country-tab" onclick="showCountryGuide('netherlands')">Netherlands</button>
+            <button class="country-tab" onclick="showCountryGuide('poland')">Poland</button>
+            <button class="country-tab" onclick="showCountryGuide('portugal')">Portugal</button>
+            <button class="country-tab" onclick="showCountryGuide('romania')">Romania</button>
+            <button class="country-tab" onclick="showCountryGuide('slovakia')">Slovakia</button>
+            <button class="country-tab" onclick="showCountryGuide('slovenia')">Slovenia</button>
+            <button class="country-tab" onclick="showCountryGuide('spain')">Spain</button>
+            <button class="country-tab" onclick="showCountryGuide('sweden')">Sweden</button>
+        </div>
+
+        <style>
+            .country-tab {
+                padding: 8px 12px;
+                background: #f8f9fa;
+                border: 1px solid #dee2e6;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 0.9em;
+                transition: all 0.2s;
+            }
+            .country-tab:hover {
+                background: #e9ecef;
+            }
+            .country-tab.active {
+                background: #007bff;
+                color: white;
+                border-color: #007bff;
+            }
+            .country-guide-content {
+                display: none;
+            }
+            .country-guide-content.active {
+                display: block;
+            }
+            .guide-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin: 15px 0;
+            }
+            .guide-table th {
+                background: #f8f9fa;
+                padding: 10px;
+                text-align: left;
+                border: 1px solid #dee2e6;
+                font-weight: 600;
+            }
+            .guide-table td {
+                padding: 10px;
+                border: 1px solid #dee2e6;
+            }
+            .guide-note {
+                background: #fff3cd;
+                border-left: 4px solid #ffc107;
+                padding: 12px;
+                margin: 15px 0;
+                font-size: 0.9em;
+            }
+        </style>
+
+        <!-- Country Guide Content -->
+
+        <!-- Austria -->
+        <div id="austria" class="country-guide-content" style="display: block;">
+            <h3>🇦🇹 Austria - Recommended Settings</h3>
+            <table class="guide-table">
+                <tr>
+                    <th>Setting</th>
+                    <th>Recommended Value</th>
+                    <th>Notes</th>
+                </tr>
+                <tr>
+                    <td>Interest Rate %</td>
+                    <td>3.5 - 4.0%</td>
+                    <td>Current mortgage rates for residential property</td>
+                </tr>
+                <tr>
+                    <td>Closing Costs (Transfer Tax)</td>
+                    <td>€3,500 - €7,000</td>
+                    <td>3.5% property transfer tax + notary fees (~1-2%)</td>
+                </tr>
+                <tr>
+                    <td>Marginal Tax Rate %</td>
+                    <td>35 - 50%</td>
+                    <td>Progressive tax: 20-55% depending on income</td>
+                </tr>
+                <tr>
+                    <td>Depreciation Period</td>
+                    <td>40 years</td>
+                    <td>2.5% per year for residential buildings</td>
+                </tr>
+                <tr>
+                    <td>Improved Value %</td>
+                    <td>75 - 85%</td>
+                    <td>Building vs land value ratio</td>
+                </tr>
+            </table>
+            <div class="guide-note">
+                <strong>💡 Austria-Specific Notes:</strong><br>
+                • Property transfer tax is 3.5% of purchase price<br>
+                • Rental income taxed at progressive rates (20-55%)<br>
+                • No depreciation allowed for land portion<br>
+                • Vienna has additional regulations for rental properties
+            </div>
+        </div>
+
+        <!-- Belgium -->
+        <div id="belgium" class="country-guide-content">
+            <h3>🇧🇪 Belgium - Recommended Settings</h3>
+            <table class="guide-table">
+                <tr>
+                    <th>Setting</th>
+                    <th>Recommended Value</th>
+                    <th>Notes</th>
+                </tr>
+                <tr>
+                    <td>Interest Rate %</td>
+                    <td>3.5 - 4.5%</td>
+                    <td>Current mortgage rates</td>
+                </tr>
+                <tr>
+                    <td>Closing Costs (Transfer Tax)</td>
+                    <td>€10,000 - €12,000</td>
+                    <td>10-12% registration duty (varies by region)</td>
+                </tr>
+                <tr>
+                    <td>Marginal Tax Rate %</td>
+                    <td>40 - 50%</td>
+                    <td>Progressive tax: 25-50%</td>
+                </tr>
+                <tr>
+                    <td>Depreciation Period</td>
+                    <td>33 years</td>
+                    <td>3% per year for buildings</td>
+                </tr>
+                <tr>
+                    <td>Improved Value %</td>
+                    <td>70 - 80%</td>
+                    <td>Building vs land value</td>
+                </tr>
+            </table>
+            <div class="guide-note">
+                <strong>💡 Belgium-Specific Notes:</strong><br>
+                • Registration duty varies: Flanders 10%, Wallonia 12.5%, Brussels 12.5%<br>
+                • Rental income taxed as regular income (25-50%)<br>
+                • Depreciation: 3% per year for buildings, 5% for equipment<br>
+                • High transfer taxes make buy-and-hold strategy important
+            </div>
+        </div>
+
+        <!-- Bulgaria -->
+        <div id="bulgaria" class="country-guide-content">
+            <h3>🇧🇬 Bulgaria - Recommended Settings</h3>
+            <table class="guide-table">
+                <tr>
+                    <th>Setting</th>
+                    <th>Recommended Value</th>
+                    <th>Notes</th>
+                </tr>
+                <tr>
+                    <td>Interest Rate %</td>
+                    <td>5.0 - 6.0%</td>
+                    <td>Higher rates than Western Europe</td>
+                </tr>
+                <tr>
+                    <td>Closing Costs (Transfer Tax)</td>
+                    <td>€2,000 - €3,000</td>
+                    <td>3% transfer tax + notary fees</td>
+                </tr>
+                <tr>
+                    <td>Marginal Tax Rate %</td>
+                    <td>10%</td>
+                    <td>Flat tax rate on rental income</td>
+                </tr>
+                <tr>
+                    <td>Depreciation Period</td>
+                    <td>50 years</td>
+                    <td>2% per year for residential buildings</td>
+                </tr>
+                <tr>
+                    <td>Improved Value %</td>
+                    <td>80 - 90%</td>
+                    <td>Land values relatively low</td>
+                </tr>
+            </table>
+            <div class="guide-note">
+                <strong>💡 Bulgaria-Specific Notes:</strong><br>
+                • One of the lowest tax rates in EU (10% flat tax)<br>
+                • Low property transfer tax (3%)<br>
+                • Popular for foreign investors due to low taxes<br>
+                • Sofia and coastal areas have higher property values
+            </div>
+        </div>
+
+        <!-- Croatia -->
+        <div id="croatia" class="country-guide-content">
+            <h3>🇭🇷 Croatia - Recommended Settings</h3>
+            <table class="guide-table">
+                <tr><th>Setting</th><th>Recommended Value</th><th>Notes</th></tr>
+                <tr><td>Interest Rate %</td><td>4.5 - 5.5%</td><td>Current mortgage rates</td></tr>
+                <tr><td>Closing Costs (Transfer Tax)</td><td>€2,100</td><td>3% transfer tax</td></tr>
+                <tr><td>Marginal Tax Rate %</td><td>20 - 30%</td><td>Progressive tax rates</td></tr>
+                <tr><td>Depreciation Period</td><td>40 years</td><td>2.5% per year</td></tr>
+                <tr><td>Improved Value %</td><td>75 - 85%</td><td>Building vs land value</td></tr>
+            </table>
+            <div class="guide-note">
+                <strong>💡 Croatia-Specific Notes:</strong><br>
+                • 3% property transfer tax<br>
+                • Coastal properties popular for tourism rentals<br>
+                • EU member since 2013, adopted Euro in 2023
+            </div>
+        </div>
+
+        <!-- Cyprus -->
+        <div id="cyprus" class="country-guide-content">
+            <h3>🇨🇾 Cyprus - Recommended Settings</h3>
+            <table class="guide-table">
+                <tr><th>Setting</th><th>Recommended Value</th><th>Notes</th></tr>
+                <tr><td>Interest Rate %</td><td>4.0 - 5.0%</td><td>Current mortgage rates</td></tr>
+                <tr><td>Closing Costs (Transfer Tax)</td><td>€2,100 - €5,600</td><td>Progressive: 3% up to €85k, then 5-8%</td></tr>
+                <tr><td>Marginal Tax Rate %</td><td>20 - 35%</td><td>Progressive tax rates</td></tr>
+                <tr><td>Depreciation Period</td><td>50 years</td><td>2% per year</td></tr>
+                <tr><td>Improved Value %</td><td>70 - 80%</td><td>Building vs land value</td></tr>
+            </table>
+            <div class="guide-note">
+                <strong>💡 Cyprus-Specific Notes:</strong><br>
+                • Progressive transfer tax: 3% (€0-€85k), 5% (€85k-€170k), 8% (>€170k)<br>
+                • Popular for foreign investors and expats<br>
+                • Favorable tax regime for non-domiciled residents
+            </div>
+        </div>
+
+        <!-- Czech Republic -->
+        <div id="czechia" class="country-guide-content">
+            <h3>🇨🇿 Czech Republic - Recommended Settings</h3>
+            <table class="guide-table">
+                <tr><th>Setting</th><th>Recommended Value</th><th>Notes</th></tr>
+                <tr><td>Interest Rate %</td><td>5.0 - 6.0%</td><td>Current mortgage rates</td></tr>
+                <tr><td>Closing Costs (Transfer Tax)</td><td>€2,800</td><td>4% transfer tax</td></tr>
+                <tr><td>Marginal Tax Rate %</td><td>15 - 23%</td><td>Progressive tax rates</td></tr>
+                <tr><td>Depreciation Period</td><td>40 years</td><td>2.5% per year</td></tr>
+                <tr><td>Improved Value %</td><td>75 - 85%</td><td>Building vs land value</td></tr>
+            </table>
+            <div class="guide-note">
+                <strong>💡 Czech Republic-Specific Notes:</strong><br>
+                • 4% property transfer tax<br>
+                • Prague has strong rental market<br>
+                • Relatively moderate tax rates compared to Western Europe
+            </div>
+        </div>
+
+        <!-- Denmark -->
+        <div id="denmark" class="country-guide-content">
+            <h3>🇩🇰 Denmark - Recommended Settings</h3>
+            <table class="guide-table">
+                <tr><th>Setting</th><th>Recommended Value</th><th>Notes</th></tr>
+                <tr><td>Interest Rate %</td><td>3.0 - 4.0%</td><td>Low mortgage rates</td></tr>
+                <tr><td>Closing Costs (Transfer Tax)</td><td>€1,470</td><td>0.6% transfer tax + 1.5% stamp duty</td></tr>
+                <tr><td>Marginal Tax Rate %</td><td>40 - 55%</td><td>Very high progressive tax</td></tr>
+                <tr><td>Depreciation Period</td><td>N/A</td><td>No depreciation for residential rental</td></tr>
+                <tr><td>Improved Value %</td><td>N/A</td><td>Not applicable</td></tr>
+            </table>
+            <div class="guide-note">
+                <strong>💡 Denmark-Specific Notes:</strong><br>
+                • Low transfer tax but very high income tax (40-55%)<br>
+                • No depreciation allowed for residential rental properties<br>
+                • Strict rental regulations in Copenhagen<br>
+                • Consider setting Improved Value to 0% in calculator
+            </div>
+        </div>
+
+        <!-- Estonia -->
+        <div id="estonia" class="country-guide-content">
+            <h3>🇪🇪 Estonia - Recommended Settings</h3>
+            <table class="guide-table">
+                <tr><th>Setting</th><th>Recommended Value</th><th>Notes</th></tr>
+                <tr><td>Interest Rate %</td><td>4.0 - 5.0%</td><td>Current mortgage rates</td></tr>
+                <tr><td>Closing Costs (Transfer Tax)</td><td>€0</td><td>No transfer tax! Only notary fees (~€500)</td></tr>
+                <tr><td>Marginal Tax Rate %</td><td>20%</td><td>Flat tax rate</td></tr>
+                <tr><td>Depreciation Period</td><td>40 years</td><td>2.5% per year</td></tr>
+                <tr><td>Improved Value %</td><td>80 - 90%</td><td>Building vs land value</td></tr>
+            </table>
+            <div class="guide-note">
+                <strong>💡 Estonia-Specific Notes:</strong><br>
+                • NO property transfer tax - major advantage!<br>
+                • Simple 20% flat tax on rental income<br>
+                • Digital-friendly country with e-Residency program<br>
+                • Tallinn has growing rental market
+            </div>
+        </div>
+
+        <!-- Finland -->
+        <div id="finland" class="country-guide-content">
+            <h3>🇫🇮 Finland - Recommended Settings</h3>
+            <table class="guide-table">
+                <tr><th>Setting</th><th>Recommended Value</th><th>Notes</th></tr>
+                <tr><td>Interest Rate %</td><td>3.5 - 4.5%</td><td>Current mortgage rates</td></tr>
+                <tr><td>Closing Costs (Transfer Tax)</td><td>€2,800</td><td>4% transfer tax</td></tr>
+                <tr><td>Marginal Tax Rate %</td><td>30 - 50%</td><td>Progressive tax rates</td></tr>
+                <tr><td>Depreciation Period</td><td>40 years</td><td>2.5% per year</td></tr>
+                <tr><td>Improved Value %</td><td>70 - 80%</td><td>Building vs land value</td></tr>
+            </table>
+            <div class="guide-note">
+                <strong>💡 Finland-Specific Notes:</strong><br>
+                • 4% property transfer tax<br>
+                • High income tax rates (30-50%)<br>
+                • Helsinki has strong rental demand<br>
+                • Cold climate affects maintenance costs
+            </div>
+        </div>
+
+        <!-- France -->
+        <div id="france" class="country-guide-content">
+            <h3>🇫🇷 France - Recommended Settings</h3>
+            <table class="guide-table">
+                <tr><th>Setting</th><th>Recommended Value</th><th>Notes</th></tr>
+                <tr><td>Interest Rate %</td><td>3.5 - 4.0%</td><td>Current mortgage rates</td></tr>
+                <tr><td>Closing Costs (Transfer Tax)</td><td>€4,900 - €5,600</td><td>7-8% transfer tax (notaire fees)</td></tr>
+                <tr><td>Marginal Tax Rate %</td><td>30 - 45%</td><td>Progressive tax 11-45%</td></tr>
+                <tr><td>Depreciation Period</td><td>20 - 40 years</td><td>Depends on building type</td></tr>
+                <tr><td>Improved Value %</td><td>70 - 80%</td><td>Building vs land value</td></tr>
+            </table>
+            <div class="guide-note">
+                <strong>💡 France-Specific Notes:</strong><br>
+                • High transfer tax (7-8% "frais de notaire")<br>
+                • Complex tax system with multiple deductions available<br>
+                • Depreciation varies: 20-40 years depending on building type<br>
+                • Paris has strict rent control regulations
+            </div>
+        </div>
+
+        <!-- Germany -->
+        <div id="germany" class="country-guide-content">
+            <h3>🇩🇪 Germany - Recommended Settings</h3>
+            <table class="guide-table">
+                <tr><th>Setting</th><th>Recommended Value</th><th>Notes</th></tr>
+                <tr><td>Interest Rate %</td><td>3.5 - 4.5%</td><td>Current mortgage rates</td></tr>
+                <tr><td>Closing Costs (Transfer Tax)</td><td>€2,450 - €4,550</td><td>3.5-6.5% varies by state</td></tr>
+                <tr><td>Marginal Tax Rate %</td><td>30 - 45%</td><td>Progressive tax 14-45%</td></tr>
+                <tr><td>Depreciation Period</td><td>40 - 50 years</td><td>2-2.5% per year</td></tr>
+                <tr><td>Improved Value %</td><td>75 - 85%</td><td>Building vs land value</td></tr>
+            </table>
+            <div class="guide-note">
+                <strong>💡 Germany-Specific Notes:</strong><br>
+                • Transfer tax varies by state: Bavaria 3.5%, Berlin 6%, NRW 6.5%<br>
+                • Depreciation: 2% per year for buildings built after 1925<br>
+                • Strong rental market in major cities (Berlin, Munich, Frankfurt)<br>
+                • Rent control ("Mietpreisbremse") in many cities
+            </div>
+        </div>
+
+        <!-- Greece -->
+        <div id="greece" class="country-guide-content">
+            <h3>🇬🇷 Greece - Recommended Settings</h3>
+            <table class="guide-table">
+                <tr><th>Setting</th><th>Recommended Value</th><th>Notes</th></tr>
+                <tr><td>Interest Rate %</td><td>4.5 - 5.5%</td><td>Current mortgage rates</td></tr>
+                <tr><td>Closing Costs (Transfer Tax)</td><td>€2,100</td><td>3% transfer tax</td></tr>
+                <tr><td>Marginal Tax Rate %</td><td>15 - 45%</td><td>Progressive tax rates</td></tr>
+                <tr><td>Depreciation Period</td><td>50 years</td><td>2% per year</td></tr>
+                <tr><td>Improved Value %</td><td>75 - 85%</td><td>Building vs land value</td></tr>
+            </table>
+            <div class="guide-note">
+                <strong>💡 Greece-Specific Notes:</strong><br>
+                • 3% property transfer tax<br>
+                • Popular for tourism/vacation rentals (islands, Athens)<br>
+                • Golden Visa program for property investors (€250k+)<br>
+                • Additional annual property tax (ENFIA)
+            </div>
+        </div>
+
+        <!-- Hungary -->
+        <div id="hungary" class="country-guide-content">
+            <h3>🇭🇺 Hungary - Recommended Settings</h3>
+            <table class="guide-table">
+                <tr><th>Setting</th><th>Recommended Value</th><th>Notes</th></tr>
+                <tr><td>Interest Rate %</td><td>6.0 - 7.0%</td><td>Higher rates than Western Europe</td></tr>
+                <tr><td>Closing Costs (Transfer Tax)</td><td>€2,800</td><td>4% transfer tax</td></tr>
+                <tr><td>Marginal Tax Rate %</td><td>15%</td><td>Flat tax rate</td></tr>
+                <tr><td>Depreciation Period</td><td>50 years</td><td>2% per year</td></tr>
+                <tr><td>Improved Value %</td><td>80 - 90%</td><td>Building vs land value</td></tr>
+            </table>
+            <div class="guide-note">
+                <strong>💡 Hungary-Specific Notes:</strong><br>
+                • Low 15% flat tax on rental income<br>
+                • 4% property transfer tax<br>
+                • Budapest has strong rental market<br>
+                • Higher interest rates than Western Europe
+            </div>
+        </div>
+
+        <!-- Ireland -->
+        <div id="ireland" class="country-guide-content">
+            <h3>🇮🇪 Ireland - Recommended Settings</h3>
+            <table class="guide-table">
+                <tr><th>Setting</th><th>Recommended Value</th><th>Notes</th></tr>
+                <tr><td>Interest Rate %</td><td>3.5 - 4.5%</td><td>Current mortgage rates</td></tr>
+                <tr><td>Closing Costs (Transfer Tax)</td><td>€700 - €1,400</td><td>1-2% progressive stamp duty</td></tr>
+                <tr><td>Marginal Tax Rate %</td><td>40 - 52%</td><td>Progressive tax 20-52%</td></tr>
+                <tr><td>Depreciation Period</td><td>50 years</td><td>Limited for residential</td></tr>
+                <tr><td>Improved Value %</td><td>70 - 80%</td><td>Building vs land value</td></tr>
+            </table>
+            <div class="guide-note">
+                <strong>💡 Ireland-Specific Notes:</strong><br>
+                • Low transfer tax (1-2%) but high income tax (up to 52%)<br>
+                • Depreciation limited for residential rental properties<br>
+                • Dublin has severe housing shortage = strong rental demand<br>
+                • Rent Pressure Zones limit rent increases to 2%/year
+            </div>
+        </div>
+
+        <!-- Italy -->
+        <div id="italy" class="country-guide-content">
+            <h3>🇮🇹 Italy - Recommended Settings</h3>
+            <table class="guide-table">
+                <tr><th>Setting</th><th>Recommended Value</th><th>Notes</th></tr>
+                <tr><td>Interest Rate %</td><td>3.5 - 4.5%</td><td>Current mortgage rates</td></tr>
+                <tr><td>Closing Costs (Transfer Tax)</td><td>€1,400 - €6,300</td><td>2-9% depends on buyer status</td></tr>
+                <tr><td>Marginal Tax Rate %</td><td>23 - 43%</td><td>Progressive tax rates</td></tr>
+                <tr><td>Depreciation Period</td><td>33 years</td><td>3% per year</td></tr>
+                <tr><td>Improved Value %</td><td>70 - 80%</td><td>Building vs land value</td></tr>
+            </table>
+            <div class="guide-note">
+                <strong>💡 Italy-Specific Notes:</strong><br>
+                • Transfer tax: 2% (first home), 9% (second home/investment)<br>
+                • Depreciation: 3% per year (33 years)<br>
+                • Popular for vacation rentals (Tuscany, Rome, Venice)<br>
+                • "Cedolare secca" flat tax option: 21% (standard) or 10% (long-term)
+            </div>
+        </div>
+
+        <!-- Latvia -->
+        <div id="latvia" class="country-guide-content">
+            <h3>🇱🇻 Latvia - Recommended Settings</h3>
+            <table class="guide-table">
+                <tr><th>Setting</th><th>Recommended Value</th><th>Notes</th></tr>
+                <tr><td>Interest Rate %</td><td>4.5 - 5.5%</td><td>Current mortgage rates</td></tr>
+                <tr><td>Closing Costs (Transfer Tax)</td><td>€1,400</td><td>2% transfer tax</td></tr>
+                <tr><td>Marginal Tax Rate %</td><td>20 - 31%</td><td>Progressive tax rates</td></tr>
+                <tr><td>Depreciation Period</td><td>50 years</td><td>2% per year</td></tr>
+                <tr><td>Improved Value %</td><td>80 - 90%</td><td>Building vs land value</td></tr>
+            </table>
+            <div class="guide-note">
+                <strong>💡 Latvia-Specific Notes:</strong><br>
+                • Low 2% property transfer tax<br>
+                • Moderate income tax (20-31%)<br>
+                • Riga has growing rental market<br>
+                • Affordable property prices compared to Western Europe
+            </div>
+        </div>
+
+        <!-- Lithuania -->
+        <div id="lithuania" class="country-guide-content">
+            <h3>🇱🇹 Lithuania - Recommended Settings</h3>
+            <table class="guide-table">
+                <tr><th>Setting</th><th>Recommended Value</th><th>Notes</th></tr>
+                <tr><td>Interest Rate %</td><td>4.0 - 5.0%</td><td>Current mortgage rates</td></tr>
+                <tr><td>Closing Costs (Transfer Tax)</td><td>€0</td><td>No transfer tax! Only notary fees (~€500)</td></tr>
+                <tr><td>Marginal Tax Rate %</td><td>15 - 20%</td><td>Progressive tax rates</td></tr>
+                <tr><td>Depreciation Period</td><td>40 years</td><td>2.5% per year</td></tr>
+                <tr><td>Improved Value %</td><td>80 - 90%</td><td>Building vs land value</td></tr>
+            </table>
+            <div class="guide-note">
+                <strong>💡 Lithuania-Specific Notes:</strong><br>
+                • NO property transfer tax - major advantage!<br>
+                • Low income tax (15-20%)<br>
+                • Vilnius has strong rental market<br>
+                • One of the most investor-friendly tax regimes in EU
+            </div>
+        </div>
+
+        <!-- Luxembourg -->
+        <div id="luxembourg" class="country-guide-content">
+            <h3>🇱🇺 Luxembourg - Recommended Settings</h3>
+            <table class="guide-table">
+                <tr><th>Setting</th><th>Recommended Value</th><th>Notes</th></tr>
+                <tr><td>Interest Rate %</td><td>3.0 - 4.0%</td><td>Low mortgage rates</td></tr>
+                <tr><td>Closing Costs (Transfer Tax)</td><td>€4,200 - €7,000</td><td>6-10% transfer tax + fees</td></tr>
+                <tr><td>Marginal Tax Rate %</td><td>30 - 45%</td><td>Progressive tax rates</td></tr>
+                <tr><td>Depreciation Period</td><td>40 years</td><td>2.5% per year</td></tr>
+                <tr><td>Improved Value %</td><td>70 - 80%</td><td>Building vs land value</td></tr>
+            </table>
+            <div class="guide-note">
+                <strong>💡 Luxembourg-Specific Notes:</strong><br>
+                • High transfer tax (6-10%)<br>
+                • Very high property prices (most expensive in EU)<br>
+                • Strong rental demand due to international workforce<br>
+                • Low interest rates available
+            </div>
+        </div>
+
+        <!-- Malta -->
+        <div id="malta" class="country-guide-content">
+            <h3>🇲🇹 Malta - Recommended Settings</h3>
+            <table class="guide-table">
+                <tr><th>Setting</th><th>Recommended Value</th><th>Notes</th></tr>
+                <tr><td>Interest Rate %</td><td>3.5 - 4.5%</td><td>Current mortgage rates</td></tr>
+                <tr><td>Closing Costs (Transfer Tax)</td><td>€3,500</td><td>5% transfer tax</td></tr>
+                <tr><td>Marginal Tax Rate %</td><td>15 - 35%</td><td>Progressive tax rates</td></tr>
+                <tr><td>Depreciation Period</td><td>50 years</td><td>2% per year</td></tr>
+                <tr><td>Improved Value %</td><td>75 - 85%</td><td>Building vs land value</td></tr>
+            </table>
+            <div class="guide-note">
+                <strong>💡 Malta-Specific Notes:</strong><br>
+                • 5% property transfer tax<br>
+                • Popular for expats and foreign investors<br>
+                • Strong rental demand (small island, limited supply)<br>
+                • Favorable tax regime for non-domiciled residents
+            </div>
+        </div>
+
+        <!-- Netherlands -->
+        <div id="netherlands" class="country-guide-content">
+            <h3>🇳🇱 Netherlands - Recommended Settings</h3>
+            <table class="guide-table">
+                <tr><th>Setting</th><th>Recommended Value</th><th>Notes</th></tr>
+                <tr><td>Interest Rate %</td><td>3.5 - 4.5%</td><td>Current mortgage rates</td></tr>
+                <tr><td>Closing Costs (Transfer Tax)</td><td>€7,280</td><td>10.4% transfer tax (HIGHEST in EU!)</td></tr>
+                <tr><td>Marginal Tax Rate %</td><td>37 - 49%</td><td>Progressive tax rates</td></tr>
+                <tr><td>Depreciation Period</td><td>N/A</td><td>No depreciation for residential rental</td></tr>
+                <tr><td>Improved Value %</td><td>N/A</td><td>Not applicable</td></tr>
+            </table>
+            <div class="guide-note">
+                <strong>💡 Netherlands-Specific Notes:</strong><br>
+                • HIGHEST transfer tax in EU: 10.4% (was 2% for first-time buyers until 2021)<br>
+                • NO depreciation allowed for residential rental properties<br>
+                • High income tax (37-49%)<br>
+                • Severe housing shortage in Amsterdam, Rotterdam, Utrecht<br>
+                • Consider setting Improved Value to 0% in calculator
+            </div>
+        </div>
+
+        <!-- Poland -->
+        <div id="poland" class="country-guide-content">
+            <h3>🇵🇱 Poland - Recommended Settings</h3>
+            <table class="guide-table">
+                <tr><th>Setting</th><th>Recommended Value</th><th>Notes</th></tr>
+                <tr><td>Interest Rate %</td><td>6.0 - 7.0%</td><td>Higher rates than Western Europe</td></tr>
+                <tr><td>Closing Costs (Transfer Tax)</td><td>€1,400</td><td>2% transfer tax (PCC)</td></tr>
+                <tr><td>Marginal Tax Rate %</td><td>12 - 32%</td><td>Progressive or 8.5% flat for rental</td></tr>
+                <tr><td>Depreciation Period</td><td>40 years</td><td>2.5% per year</td></tr>
+                <tr><td>Improved Value %</td><td>80 - 90%</td><td>Building vs land value</td></tr>
+            </table>
+            <div class="guide-note">
+                <strong>💡 Poland-Specific Notes:</strong><br>
+                • Low 2% property transfer tax<br>
+                • Can choose: Progressive tax (12-32%) OR flat 8.5% for rental income<br>
+                • Warsaw, Krakow have strong rental markets<br>
+                • Higher interest rates (6-7%) than Western Europe
+            </div>
+        </div>
+
+        <!-- Portugal -->
+        <div id="portugal" class="country-guide-content">
+            <h3>🇵🇹 Portugal - Recommended Settings</h3>
+            <table class="guide-table">
+                <tr><th>Setting</th><th>Recommended Value</th><th>Notes</th></tr>
+                <tr><td>Interest Rate %</td><td>4.0 - 5.0%</td><td>Current mortgage rates</td></tr>
+                <tr><td>Closing Costs (Transfer Tax)</td><td>€5,110</td><td>6.5% IMT + 0.8% stamp duty</td></tr>
+                <tr><td>Marginal Tax Rate %</td><td>28%</td><td>28% flat for rental or progressive 14.5-53%</td></tr>
+                <tr><td>Depreciation Period</td><td>50 years</td><td>2% per year</td></tr>
+                <tr><td>Improved Value %</td><td>70 - 80%</td><td>Building vs land value</td></tr>
+            </table>
+            <div class="guide-note">
+                <strong>💡 Portugal-Specific Notes:</strong><br>
+                • Transfer tax (IMT): 6.5% + stamp duty 0.8%<br>
+                • Can choose: 28% flat tax on rental income OR progressive (14.5-53%)<br>
+                • Golden Visa program for property investors (€500k+)<br>
+                • Popular for tourism rentals (Lisbon, Porto, Algarve)
+            </div>
+        </div>
+
+        <!-- Romania -->
+        <div id="romania" class="country-guide-content">
+            <h3>🇷🇴 Romania - Recommended Settings</h3>
+            <table class="guide-table">
+                <tr><th>Setting</th><th>Recommended Value</th><th>Notes</th></tr>
+                <tr><td>Interest Rate %</td><td>6.0 - 7.5%</td><td>Higher rates than Western Europe</td></tr>
+                <tr><td>Closing Costs (Transfer Tax)</td><td>€700 - €2,100</td><td>1-3% transfer tax</td></tr>
+                <tr><td>Marginal Tax Rate %</td><td>10%</td><td>Flat tax rate</td></tr>
+                <tr><td>Depreciation Period</td><td>50 years</td><td>2% per year</td></tr>
+                <tr><td>Improved Value %</td><td>80 - 90%</td><td>Building vs land value</td></tr>
+            </table>
+            <div class="guide-note">
+                <strong>💡 Romania-Specific Notes:</strong><br>
+                • Very low 10% flat tax on rental income<br>
+                • Low transfer tax (1-3%)<br>
+                • Bucharest has growing rental market<br>
+                • Affordable property prices, good cash flow potential
+            </div>
+        </div>
+
+        <!-- Slovakia -->
+        <div id="slovakia" class="country-guide-content">
+            <h3>🇸🇰 Slovakia - Recommended Settings</h3>
+            <table class="guide-table">
+                <tr><th>Setting</th><th>Recommended Value</th><th>Notes</th></tr>
+                <tr><td>Interest Rate %</td><td>5.0 - 6.0%</td><td>Current mortgage rates</td></tr>
+                <tr><td>Closing Costs (Transfer Tax)</td><td>€0</td><td>No transfer tax! Only notary fees (~€500)</td></tr>
+                <tr><td>Marginal Tax Rate %</td><td>19 - 25%</td><td>Progressive tax rates</td></tr>
+                <tr><td>Depreciation Period</td><td>40 years</td><td>2.5% per year</td></tr>
+                <tr><td>Improved Value %</td><td>80 - 90%</td><td>Building vs land value</td></tr>
+            </table>
+            <div class="guide-note">
+                <strong>💡 Slovakia-Specific Notes:</strong><br>
+                • NO property transfer tax - major advantage!<br>
+                • Moderate income tax (19-25%)<br>
+                • Bratislava has strong rental market<br>
+                • Adopted Euro in 2009
+            </div>
+        </div>
+
+        <!-- Slovenia -->
+        <div id="slovenia" class="country-guide-content">
+            <h3>🇸🇮 Slovenia - Recommended Settings</h3>
+            <table class="guide-table">
+                <tr><th>Setting</th><th>Recommended Value</th><th>Notes</th></tr>
+                <tr><td>Interest Rate %</td><td>4.0 - 5.0%</td><td>Current mortgage rates</td></tr>
+                <tr><td>Closing Costs (Transfer Tax)</td><td>€1,400</td><td>2% transfer tax</td></tr>
+                <tr><td>Marginal Tax Rate %</td><td>16 - 50%</td><td>Progressive tax rates</td></tr>
+                <tr><td>Depreciation Period</td><td>40 years</td><td>2.5% per year</td></tr>
+                <tr><td>Improved Value %</td><td>75 - 85%</td><td>Building vs land value</td></tr>
+            </table>
+            <div class="guide-note">
+                <strong>💡 Slovenia-Specific Notes:</strong><br>
+                • Low 2% property transfer tax<br>
+                • Progressive income tax (16-50%)<br>
+                • Ljubljana has growing rental market<br>
+                • Small market but stable economy
+            </div>
+        </div>
+
+        <!-- Spain -->
+        <div id="spain" class="country-guide-content">
+            <h3>🇪🇸 Spain - Recommended Settings</h3>
+            <table class="guide-table">
+                <tr><th>Setting</th><th>Recommended Value</th><th>Notes</th></tr>
+                <tr><td>Interest Rate %</td><td>3.5 - 4.5%</td><td>Current mortgage rates</td></tr>
+                <tr><td>Closing Costs (Transfer Tax)</td><td>€4,200 - €7,700</td><td>6-11% ITP (varies by region)</td></tr>
+                <tr><td>Marginal Tax Rate %</td><td>19 - 47%</td><td>Progressive tax rates</td></tr>
+                <tr><td>Depreciation Period</td><td>68 years</td><td>1.5% per year (LONGEST in EU!)</td></tr>
+                <tr><td>Improved Value %</td><td>70 - 80%</td><td>Building vs land value</td></tr>
+            </table>
+            <div class="guide-note">
+                <strong>💡 Spain-Specific Notes:</strong><br>
+                • Transfer tax (ITP) varies by region: 6-11%<br>
+                • LONGEST depreciation period in EU: 68 years (1.5%/year)<br>
+                • Popular for vacation rentals (Barcelona, Madrid, Costa del Sol)<br>
+                • Golden Visa program for property investors (€500k+)
+            </div>
+        </div>
+
+        <!-- Sweden -->
+        <div id="sweden" class="country-guide-content">
+            <h3>🇸🇪 Sweden - Recommended Settings</h3>
+            <table class="guide-table">
+                <tr><th>Setting</th><th>Recommended Value</th><th>Notes</th></tr>
+                <tr><td>Interest Rate %</td><td>4.0 - 5.0%</td><td>Current mortgage rates</td></tr>
+                <tr><td>Closing Costs (Transfer Tax)</td><td>€2,450</td><td>1.5% stamp duty + 2% registration</td></tr>
+                <tr><td>Marginal Tax Rate %</td><td>30%</td><td>30% flat tax on rental income</td></tr>
+                <tr><td>Depreciation Period</td><td>50 years</td><td>2% per year</td></tr>
+                <tr><td>Improved Value %</td><td>70 - 80%</td><td>Building vs land value</td></tr>
+            </table>
+            <div class="guide-note">
+                <strong>💡 Sweden-Specific Notes:</strong><br>
+                • Moderate transfer costs (1.5% + 2% = 3.5% total)<br>
+                • 30% flat tax on rental income (relatively simple)<br>
+                • Stockholm has severe housing shortage<br>
+                • Strict rental regulations in major cities
+            </div>
+        </div>
+
+    </div>
+
 </body>
 </html>
 
