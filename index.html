@@ -384,8 +384,23 @@
                 <h3>Foreign Investor Costs (Canadian Avg)</h3>
 
                 <div class="form-field">
-                    <label>Tax Prep Fees/Yr (Avg: $1,500)</label>
-                    <input type="number" id="taxPrepFees" value="1500" oninput="calculate()">
+                    <label>US 1040-NR Tax Return/Yr (Avg: $500)</label>
+                    <input type="number" id="fee1040NR" value="500" oninput="calculate()">
+                </div>
+
+                <div class="form-field">
+                    <label>W-8ECI Form Prep/Yr (Avg: $150)</label>
+                    <input type="number" id="feeW8ECI" value="150" oninput="calculate()">
+                </div>
+
+                <div class="form-field">
+                    <label>Canadian T1 Adjustments/Yr (Avg: $200)</label>
+                    <input type="number" id="feeT1" value="200" oninput="calculate()">
+                </div>
+
+                <div class="form-field">
+                    <label>ITIN Application (One-time, Year 1) (Avg: $250)</label>
+                    <input type="number" id="feeITIN" value="250" oninput="calculate()">
                 </div>
 
                 <div class="form-field">
@@ -476,7 +491,10 @@
             const improvedValuePct = parseFloat(document.getElementById('improvedValuePct').value) || 0;
             const marginalTaxRate = parseFloat(document.getElementById('marginalTaxRate').value) || 0;
             const foreignTaxRate = parseFloat(document.getElementById('foreignTaxRate').value) || 0;
-            const taxPrepFees = parseFloat(document.getElementById('taxPrepFees').value) || 0;
+            const fee1040NR = parseFloat(document.getElementById('fee1040NR').value) || 0;
+            const feeW8ECI = parseFloat(document.getElementById('feeW8ECI').value) || 0;
+            const feeT1 = parseFloat(document.getElementById('feeT1').value) || 0;
+            const feeITIN = parseFloat(document.getElementById('feeITIN').value) || 0;
             const currencyExchangePct = parseFloat(document.getElementById('currencyExchangePct').value) || 0;
             const firptaRate = parseFloat(document.getElementById('firptaRate').value) || 0;
 
@@ -516,9 +534,10 @@
 
             // Apply foreign investor costs
             const foreignTaxAmount = annualNet * (foreignTaxRate / 100);
-            const monthlyTaxPrepFees = taxPrepFees / 12;
+            const totalTaxPrepFees = fee1040NR + feeW8ECI + feeT1 + feeITIN;
+            const monthlyTaxPrepFees = totalTaxPrepFees / 12;
             const currencyExchangeLoss = grossRent * (currencyExchangePct / 100);
-            const totalForeignCosts = foreignTaxAmount + taxPrepFees + (currencyExchangeLoss * 12);
+            const totalForeignCosts = foreignTaxAmount + totalTaxPrepFees + (currencyExchangeLoss * 12);
 
             const annualNetAfterForeignCosts = annualNet - totalForeignCosts;
             const monthlyNetAfterForeignCosts = annualNetAfterForeignCosts / 12;
@@ -604,7 +623,7 @@
                     <span class="metric-label"><strong>Annualized ROI</strong></span>
                     <span class="metric-value"><strong>${annualizedROI.toFixed(2)}%</strong></span>
                 </div>
-                ${(foreignTaxRate > 0 || taxPrepFees > 0 || currencyExchangePct > 0) ? `
+                ${(foreignTaxRate > 0 || totalTaxPrepFees > 0 || currencyExchangePct > 0) ? `
                     <h3 style="margin: 15px 0 8px 0; font-size: 0.95em;">Foreign Investor Costs (Canadian)</h3>
                     ${foreignTaxRate > 0 ? `
                         <div class="metric">
@@ -612,10 +631,28 @@
                             <span class="metric-value" style="color: #dc3545;">-$${foreignTaxAmount.toFixed(2)}/yr</span>
                         </div>
                     ` : ''}
-                    ${taxPrepFees > 0 ? `
+                    ${fee1040NR > 0 ? `
                         <div class="metric">
-                            <span class="metric-label">Tax Prep Fees</span>
-                            <span class="metric-value" style="color: #dc3545;">-$${taxPrepFees.toFixed(2)}/yr</span>
+                            <span class="metric-label">US 1040-NR Tax Return</span>
+                            <span class="metric-value" style="color: #dc3545;">-$${fee1040NR.toFixed(2)}/yr</span>
+                        </div>
+                    ` : ''}
+                    ${feeW8ECI > 0 ? `
+                        <div class="metric">
+                            <span class="metric-label">W-8ECI Form Prep</span>
+                            <span class="metric-value" style="color: #dc3545;">-$${feeW8ECI.toFixed(2)}/yr</span>
+                        </div>
+                    ` : ''}
+                    ${feeT1 > 0 ? `
+                        <div class="metric">
+                            <span class="metric-label">Canadian T1 Adjustments</span>
+                            <span class="metric-value" style="color: #dc3545;">-$${feeT1.toFixed(2)}/yr</span>
+                        </div>
+                    ` : ''}
+                    ${feeITIN > 0 ? `
+                        <div class="metric">
+                            <span class="metric-label">ITIN Application (Year 1)</span>
+                            <span class="metric-value" style="color: #dc3545;">-$${feeITIN.toFixed(2)}</span>
                         </div>
                     ` : ''}
                     ${currencyExchangePct > 0 ? `
@@ -887,7 +924,10 @@
                 improvedValuePct: document.getElementById('improvedValuePct').value,
                 marginalTaxRate: document.getElementById('marginalTaxRate').value,
                 foreignTaxRate: document.getElementById('foreignTaxRate').value,
-                taxPrepFees: document.getElementById('taxPrepFees').value,
+                fee1040NR: document.getElementById('fee1040NR').value,
+                feeW8ECI: document.getElementById('feeW8ECI').value,
+                feeT1: document.getElementById('feeT1').value,
+                feeITIN: document.getElementById('feeITIN').value,
                 currencyExchangePct: document.getElementById('currencyExchangePct').value,
                 firptaRate: document.getElementById('firptaRate').value
             };

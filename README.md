@@ -62,20 +62,40 @@ Shows in Appreciation tab when you sell the property
 
 ### What Extra Costs Do Canadians Pay?
 
-1. **Tax Preparation** (~$1,500/year)
-   - US tax return (Form 1040-NR)
-   - Canadian cross-border tax prep
-   - ITIN application (one-time)
+#### 1. **Tax Preparation Fees** (~$1,000/year average)
 
-2. **Currency Exchange** (~2% loss)
-   - Bank fees on USD → CAD conversion
-   - Exchange rate spreads
-   - Applied to monthly rent collection
+When you're a Canadian with US rental property, you need to file **TWO tax returns** every year:
 
-3. **FIRPTA Withholding** (15% of sale price)
-   - Withheld at closing when you sell
-   - File US tax return to get refund of overpayment
-   - Not your final tax, just a withholding
+**US Tax Return (Form 1040-NR)** - $500-$800
+- Form 1040-NR (Non-Resident Alien Income Tax Return)
+- Schedule E (Rental Income and Expenses)
+- Form W-8ECI (to avoid 30% withholding)
+- State tax return (if applicable) - $150-$200 extra
+
+**Canadian Tax Return Adjustments** - $150-$300
+- Report US rental income on Canadian T1
+- Claim foreign tax credit for US taxes paid
+- Additional complexity for cross-border reporting
+
+**ITIN Application (First Year Only)** - $200-$300
+- If you don't have a US Social Security Number
+- Need an ITIN (Individual Taxpayer Identification Number)
+- One-time cost in first year
+
+**Realistic Costs:**
+- First Year: $1,000-$1,500 (includes ITIN application)
+- Subsequent Years: $700-$1,000 (routine filing)
+- Average over 5 years: ~$1,000/year
+
+#### 2. **Currency Exchange** (~2% loss)
+- Bank fees on USD → CAD conversion
+- Exchange rate spreads
+- Applied to monthly rent collection
+
+#### 3. **FIRPTA Withholding** (15% of sale price)
+- Withheld at closing when you sell
+- File US tax return to get refund of overpayment
+- Not your final tax, just a withholding
 
 ### Pro Tips for Canadians
 - File **Form W-8ECI** to avoid 30% withholding on rental income
