@@ -7,7 +7,7 @@
 - **Debt Coverage Ratio (DCR)** - Commercial loan qualification analysis
 - **5-Year Tax Deductions** - Depreciation and interest deduction tracking
 
-### 🇨🇦 Canadian Investor Features
+###  Canadian Investor Features
 Special inputs for foreign investors with Canadian averages:
 - **Tax Prep Fees** (Avg: $1,500/year) - US & Canadian cross-border tax preparation
 - **Currency Exchange Loss** (Avg: 2%) - USD/CAD conversion costs on rent collection
